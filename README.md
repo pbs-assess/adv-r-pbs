@@ -13,8 +13,8 @@ If there are topics or exercises in the material covered that you particularly s
 | Date                     | Location  | Book topics                         |
 |--------------------------|-----------|-------------------------------------|
 | 2019-03-08 10:30–12:00   | 227A      | Foundations (1–4)                   |
-|                          |           | Foundations (5–11)                  |
-|                          |           | Functional programming (9–11)       |
+| 2019-03-22 10:30–12:00   | 230       | Foundations (5–11)                  |
+| 2019-04-05 10:30–12:00   | 230       | Functional programming (9–11)       |
 |                          |           | Object-oriented programming (13–16) |
 |                          |           | Metaprogramming (17–21)             |
 |                          |           | Techniques      (22–25)             |
