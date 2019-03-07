@@ -4,6 +4,7 @@ output: rmarkdown::github_document
 ---
 
 ```{r}
+library(tidyverse)
 library(lobstr)
 ```
 
@@ -100,6 +101,8 @@ Read the help. E.g. "The character "X" is prepended if necessary. All invalid ch
 
 *1. Why is tracemem(1:10) not useful?*
 
+1:10 does not refer to a variable name and therefore cannot be accessed later by any code.
+
 *2. Explain why tracemem() shows two copies when you run this code. Hint: carefully look at the difference between this code and the code shown earlier in the section.*
 
 ```{r}
@@ -111,13 +114,32 @@ tracemem(x)
 x[[3]] <- 4
 ```
 
+This is because the original vector is of type `integer` and we are inserting a new value of type `numeric`, so the whole
+list is copied and a new reference is generated. This could be a huge performance hit if done accidentally on long lists.
+
 *3. Sketch out the relationship between the following objects:*
 
 ```{r}
 a <- 1:10
-c <- list(b, a, 1:10)
 b <- list(a, a)
+c <- list(b, a, 1:10)
 ```
+
+Answer:
+
+```{r}
+a <- 1:10
+b <- list(a, a)
+lobstr::ref(a)
+lobstr::ref(b)
+```
+The elements of `b` both have the same address because they are identical and R is smart and won't make a new object if it doesn't have to.
+
+```{r}
+c <- list(b, a, 1:10)
+lobstr::ref(c)
+```
+List `c` contains list `b` which is identical to the object `b` itself, then vector `a`, then a newly created vector. Only one new memory allocation happens in this call.
 
 *4. What happens when you run this code?*
 
@@ -126,7 +148,17 @@ x <- list(1:10)
 x[[2]] <- x
 ```
 
-Draw a picture.
+Answer:
+```{r}
+x <- list(1:10)
+lobstr::ref(x)
+```
+After the list is created, we set an element of it to be the list itself. One would expect some sort of recursive behaviour, but..
+```{r}
+x[[2]] <- x
+lobstr::ref(x)
+```
+The second list element is a simple memory address copy of the first. This outlines that because variables are stored in R as references, this kind of assignment is easy to implement.
 
 # 2.5.3
 
@@ -137,6 +169,62 @@ x <- list()
 x[[1]] <- x
 ```
 
+Answer:
+```{r}
+x <- list()
+lobstr::ref(x)
+x[[1]] <- x
+lobstr::ref(x)
+```
+After the second call, the original list reference is now the sublist reference and the outer list reference has been given a new address.
+
 *2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?*
 
+```{r}
+set.seed(42)
+sub.med <- function(x, m){
+    for (i in seq_along(m)) {
+      x[[i]] <- x[[i]] - m[[i]]
+    }
+  }
+
+results <- bench::press(
+  rows = 50000,
+  cols = c(5, 50, 500, 2000),
+  rep = 1,
+  {
+    dat <- data.frame(matrix(runif(rows), ncol = cols))
+    med <- vapply(dat, median, numeric(1))
+    bench::mark(
+      df  = sub.med(dat, med),
+      lst = sub.med(as.list(dat), med)
+   )
+  }
+)
+  
+results %>%
+  unnest() %>%
+  select(expression, cols, Time = total_time) %>%
+  distinct() %>%
+  mutate(expression = replace(expression, expression == "df", "Data Frame"),
+         expression = replace(expression, expression == "lst", "List"),
+         Time = as.numeric(Time)) %>%
+  ggplot(aes(x = Time, y = cols, color = expression)) +
+  geom_point() +
+  geom_path(size = 1) +
+  xlim(c(0, NA)) +
+  ylim(c(0, NA)) +
+  labs(x = "Time to finish",
+       y = "Number of columns in data frame",
+       fill = "") +
+  scale_color_discrete(name = "Object type") +
+  ggtitle("Times for for loop to run") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+Times are much slower when using for loops with data frames than with lists. Memory allocation is also much higher.
+
 *3. What happens if you attempt to use tracemem() on an environment?*
+
+Error in tracemem(e) : 
+  'tracemem' is not useful for promise and environment objects
