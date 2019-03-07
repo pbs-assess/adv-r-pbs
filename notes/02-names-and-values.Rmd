@@ -3,17 +3,24 @@ title: "Foundations: Names and Values"
 output: rmarkdown::github_document
 ---
 
-copy-on-modify
+- copy-on-modify modify behaviour is important
 
-tracemem
-untracemem, 
+- Trace copy-on-modify behaviour: 
+- `tracemem()`
+- `untracemem()`
 
-Lists: more complex because instead of storing the values itself, it instead stores references to them
+- Lists: more complex because instead of storing the values itself, it instead stores references to them
 
-"This, however, is a shallow copy: the list object and its bindings are copied, but the values pointed to by the bindings are not."
+- "This, however, is a shallow copy: the list object and its bindings are copied, but the values pointed to by the bindings are not."
 
-To see values that are shared across lists, use lobstr::ref()
+- To see values that are shared across lists, use `lobstr::ref()`
 
-Data frames are lists of vectors, 
+- Data frames are lists of vectors
 
-Character vectors are strange! "But this is a polite fiction. R actually uses a global string pool where each element of a character vector is a pointer to a unique string in the pool:"
+- Character vectors are strange! "But this is a polite fiction. R actually uses a global string pool where each element of a character vector is a pointer to a unique string in the pool:"
+
+- find out how much memory object takes with `lobstr::obj_size()`
+
+- "because R uses a global string pool character vectors take up less memory than you might expect"
+
+- "obj_size(x) + obj_size(y) will only equal obj_size(x, y) if there are no shared values."
