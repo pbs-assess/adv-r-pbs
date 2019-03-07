@@ -1,0 +1,25 @@
+- "Vectors come in two flavours: atomic vectors and lists11. They differ in terms of their elements’ types: for atomic vectors, all elements must have the same type; for lists, elements can have different types"
+
+- "When the inputs are atomic vectors, c() always creates another atomic vector; i.e. it flattens:"
+
+- see typeof()!
+
+```r
+x <- c(NA, 5, NA, 10)
+x == NA
+#> [1] NA NA NA NA
+```
+
+- "This result is correct (if a little surprising) because there’s no reason to believe that one missing value has the same value as another.
+
+- "Technically there are four missing values, one for each of the atomic types: NA (logical), NA_integer_ (integer), NA_real_ (double), and NA_character_ (character)."
+
+-  "one" > 2; [1] TRUE
+
+- "There are only two attributes that are routinely preserved: 1: names, a character vector giving each element a name. 2: dim, short for dimensions, an integer vector, used to turn vectors into matrices or arrays."
+
+- "You can remove names from a vector by using unname(x) or names(x) <- NULL."
+
+- "To be useful with character subsetting (e.g. Section 4.5.1) names should be unique, and non-missing, but this is not enforced by R."
+
+- see `abind::abind()` and `dimnames()` for working with arrays

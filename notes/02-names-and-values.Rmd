@@ -57,3 +57,5 @@ for (i in 1:5) {
 ```
 
 - environments are always modified in place
+
+- lobstr::mem_used() is a wrapper around gc() that prints the total number of bytes used
