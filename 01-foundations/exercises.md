@@ -1,0 +1,195 @@
+Foundations sections 1 to 4
+================
+
+``` r
+library(lobstr)
+```
+
+# Quiz
+
+*Given the following data frame, how do I create a new column called “3”
+that contains the sum of 1 and 2? You may only use $, not \[\[. What
+makes 1, 2, and 3 challenging as variable names?*
+
+``` r
+df <- data.frame(runif(3), runif(3))
+names(df) <- c(1, 2)
+```
+
+``` r
+df$`3` <- df$`1` + df$`2`
+```
+
+Challenging because you have to backtick everything.
+
+*In the following code, how much memory does y occupy?*
+
+``` r
+x <- runif(1e6)
+y <- list(x, x, x)
+```
+
+About 8 mb.
+
+``` r
+lobstr::obj_size(x)
+```
+
+    ## 8,000,048 B
+
+``` r
+lobstr::obj_size(y)
+```
+
+    ## 8,000,128 B
+
+*On which line does a get copied in the following example?*
+
+``` r
+a <- c(1, 5, 3, 2)
+b <- a
+b[[1]] <- 10
+```
+
+a does not get copied until b is modified on the third line.
+
+# 2.2.2
+
+*1. Explain the relationship between a, b, c and d in the following
+code:*
+
+``` r
+a <- 1:10
+b <- a
+c <- b
+d <- 1:10
+
+lobstr::obj_addr(a)
+```
+
+    ## [1] "0x7fde5f51d738"
+
+``` r
+lobstr::obj_addr(b)
+```
+
+    ## [1] "0x7fde5f51d738"
+
+``` r
+lobstr::obj_addr(c)
+```
+
+    ## [1] "0x7fde5f51d738"
+
+``` r
+lobstr::obj_addr(d)
+```
+
+    ## [1] "0x7fde5eb32218"
+
+a, b, c are names pointing to the same object. d is a name pointing to a
+different object that happens to have the same values.
+
+*2. The following code accesses the mean function in multiple ways. Do
+they all point to the same underlying function object? Verify this with
+lobstr::obj\_addr().*
+
+``` r
+mean
+```
+
+    ## function (x, ...) 
+    ## UseMethod("mean")
+    ## <bytecode: 0x7fde63128f90>
+    ## <environment: namespace:base>
+
+``` r
+base::mean
+```
+
+    ## function (x, ...) 
+    ## UseMethod("mean")
+    ## <bytecode: 0x7fde63128f90>
+    ## <environment: namespace:base>
+
+``` r
+get("mean")
+```
+
+    ## function (x, ...) 
+    ## UseMethod("mean")
+    ## <bytecode: 0x7fde63128f90>
+    ## <environment: namespace:base>
+
+``` r
+evalq(mean)
+```
+
+    ## function (x, ...) 
+    ## UseMethod("mean")
+    ## <bytecode: 0x7fde63128f90>
+    ## <environment: namespace:base>
+
+``` r
+match.fun("mean")
+```
+
+    ## function (x, ...) 
+    ## UseMethod("mean")
+    ## <bytecode: 0x7fde63128f90>
+    ## <environment: namespace:base>
+
+``` r
+lobstr::obj_addr(mean)
+```
+
+    ## [1] "0x7fde63129038"
+
+``` r
+lobstr::obj_addr(base::mean)
+```
+
+    ## [1] "0x7fde63129038"
+
+``` r
+lobstr::obj_addr(get("mean"))
+```
+
+    ## [1] "0x7fde63129038"
+
+``` r
+lobstr::obj_addr(evalq(mean))
+```
+
+    ## [1] "0x7fde63129038"
+
+``` r
+lobstr::obj_addr(match.fun("mean"))
+```
+
+    ## [1] "0x7fde63129038"
+
+Yes, they all point to the same underlying function object.
+
+*3. By default, base R data import functions, like read.csv(), will
+automatically convert non-syntactic names to syntactic ones. Why might
+this be problematic? What option allows you to suppress this behaviour*
+
+Can be problematic because of the complex set of rules for the
+conversion. You may not know what you are getting. Can suppress with the
+`check.names` argument.
+
+*4. What rules does make.names() use to convert non-syntactic names into
+syntactic ones?*
+
+Read the help. E.g. “The character”X" is prepended if necessary. All
+invalid characters are translated to “.”. A missing value is translated
+to “NA”. Names which match R keywords have a dot appended to them.
+Duplicated values are altered by make.unique."
+
+*5. I slightly simplified the rules that govern syntactic names. Why is
+.123e1 not a syntactic name? Read ?make.names for the full details.*
+
+“A syntactically valid name consists of letters, numbers and the dot or
+underline characters and starts with a letter or the dot not followed by
+a number.”
