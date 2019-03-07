@@ -55,7 +55,9 @@ a <- 1:10
 b <- a
 c <- b
 d <- 1:10
+```
 
+```{r}
 lobstr::obj_addr(a)
 lobstr::obj_addr(b)
 lobstr::obj_addr(c)
@@ -94,30 +96,38 @@ lobstr::obj_addr(match.fun("mean"))
 
 5. I slightly simplified the rules that govern syntactic names. Why is .123e1 not a syntactic name? Read ?make.names for the full details.
 
-"A syntactically valid name consists of letters, numbers and the dot or underline characters and starts with a letter or the dot not followed by a number."
+> "A syntactically valid name consists of letters, numbers and the dot or underline characters and starts with a letter or the dot not followed by a number."
 
 # 2.3.6
 
 1. Why is tracemem(1:10) not useful?
+
+> Because `tracemem()` traces what happens with memory for a given object. 1:10 hasn't been saved to an object with a name.
 
 2. Explain why tracemem() shows two copies when you run this code. Hint: carefully look at the difference between this code and the code shown earlier in the section.
 
 ```{r}
 x <- c(1L, 2L, 3L)
 tracemem(x)
-```
-
-```{r}
 x[[3]] <- 4
 ```
+
+> FIXME This is starting with a vector of integers, but 4 is not an integer to R, so I assume it coerces the class as well.
 
 3. Sketch out the relationship between the following objects:
 
 ```{r}
 a <- 1:10
-c <- list(b, a, 1:10)
 b <- list(a, a)
+c <- list(b, a, 1:10)
 ```
+
+```{r}
+lobstr::ref(a, b, c)
+```
+
+> `b` is a list and its contents make two references to `a`.
+> `c` is a list in which the first element references `b` the second element references `a` and the third element references a new set of values.
 
 4. What happens when you run this code?
 
@@ -125,6 +135,8 @@ b <- list(a, a)
 x <- list(1:10)
 x[[2]] <- x
 ```
+
+> In the second step, R makes the second element of the list `x` reference the first element.
 
 5. Draw a picture.
 

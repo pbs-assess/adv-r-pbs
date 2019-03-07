@@ -1,0 +1,19 @@
+---
+title: "Foundations: Names and Values"
+output: rmarkdown::github_document
+---
+
+copy-on-modify
+
+tracemem
+untracemem, 
+
+Lists: more complex because instead of storing the values itself, it instead stores references to them
+
+"This, however, is a shallow copy: the list object and its bindings are copied, but the values pointed to by the bindings are not."
+
+To see values that are shared across lists, use lobstr::ref()
+
+Data frames are lists of vectors, 
+
+Character vectors are strange! "But this is a polite fiction. R actually uses a global string pool where each element of a character vector is a pointer to a unique string in the pool:"
