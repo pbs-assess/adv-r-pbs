@@ -92,7 +92,7 @@ x3 <- array(1:5, c(5, 1, 1))
 x3
 ```
 
-> These are multidimensional arrays, with the vector or lengths of each dimension given as a vector for the second argument.
+> These are multidimensional arrays, with the vector of lengths of each dimension given for the second argument.
 > 1:5 doesn't technically have dimensions and is not an array, it is a vector.
 
 4. An early draft used this code to illustrate structure():
