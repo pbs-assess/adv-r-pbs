@@ -31,7 +31,13 @@ Foundations: Vectors
 
 5.  How do tibbles behave differently from data frames?
 
-> better printing, stringsAsFactors = FALSE, drop = FALSE as defaults
+> better printing, stringsAsFactors = FALSE, drop = FALSE as defaults;
+> they don’t transform non-syntactic names; they don’t coerce input
+> types; tibbles won’t recycle values for other columns unless they are
+> of length 1; tibbles allow you to build on columns as they are
+> constructed; tibbles do not support row names on purpose; tibbles
+> don’t do partial matching with $ column selecting; easier creation
+> of list columns.
 
 ## 3.2 Atomic vectors
 
@@ -393,34 +399,132 @@ levels(f3)
 
 1.  List all the ways that a list differs from an atomic vector.
 
-> 
+> FIXME: Lists can contain references to objects of multiple types;
+> lists always contain references to objects; lists can be recursive and
+> contain other lists…
 
 2.  Why do you need to use unlist() to convert a list to an atomic
     vector? Why doesn’t as.vector() work?
 
-> 
+> FIXME: the rules for coercion are complex and require their own
+> function
 
 3.  Compare and contrast c() and unlist() when combining a date and
     date-time into a single vector.
 
-> 
+<!-- end list -->
+
+``` r
+x <- as.POSIXct("2018-08-01 22:00")
+y <- as.Date("1jan2018", "%d%b%Y")
+z <- list(x, y)
+c(z)
+```
+
+    ## [[1]]
+    ## [1] "2018-08-01 22:00:00 PDT"
+    ##
+    ## [[2]]
+    ## [1] "2018-01-01"
+
+``` r
+unlist(z)
+```
+
+    ## [1] 1533186000      17532
+
+> c() keeps a list where each element refers to an object of a different
+> class unlist() coerces the elements to numeric
 
 ## 3.6 Data Frames and tibbles
 
 1.  Can you have a data frame with zero rows? What about zero columns?
 
-> 
+> rows: yes, columns: no
 
 2.  What happens if you attempt to set rownames that are not unique?
 
-> 
+<!-- end list -->
+
+``` r
+x <- data.frame(1:10)
+# rownames(x) <- c(1, 1:9)
+# Error in `.rowNamesDF<-`(x, value = value) :
+#   duplicate 'row.names' are not allowed
+```
 
 3.  If df is a data frame, what can you say about t(df), and t(t(df))?
     Perform some experiments, making sure to try different column types.
 
-> 
+<!-- end list -->
+
+``` r
+df <- data.frame(x = 1:10, y = 1:10)
+t(df)
+```
+
+    ##   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+    ## x    1    2    3    4    5    6    7    8    9    10
+    ## y    1    2    3    4    5    6    7    8    9    10
+
+``` r
+t(t(df))
+```
+
+    ##        x  y
+    ##  [1,]  1  1
+    ##  [2,]  2  2
+    ##  [3,]  3  3
+    ##  [4,]  4  4
+    ##  [5,]  5  5
+    ##  [6,]  6  6
+    ##  [7,]  7  7
+    ##  [8,]  8  8
+    ##  [9,]  9  9
+    ## [10,] 10 10
+
+> The type is coerced
 
 4.  What does as.matrix() do when applied to a data frame with columns
     of different types? How does it differ from data.matrix()?
 
->
+<!-- end list -->
+
+``` r
+df <- data.frame(x = 1:10, y = letters[1:10])
+as.matrix(df)
+```
+
+    ##       x    y
+    ##  [1,] " 1" "a"
+    ##  [2,] " 2" "b"
+    ##  [3,] " 3" "c"
+    ##  [4,] " 4" "d"
+    ##  [5,] " 5" "e"
+    ##  [6,] " 6" "f"
+    ##  [7,] " 7" "g"
+    ##  [8,] " 8" "h"
+    ##  [9,] " 9" "i"
+    ## [10,] "10" "j"
+
+``` r
+data.matrix(df)
+```
+
+    ##        x  y
+    ##  [1,]  1  1
+    ##  [2,]  2  2
+    ##  [3,]  3  3
+    ##  [4,]  4  4
+    ##  [5,]  5  5
+    ##  [6,]  6  6
+    ##  [7,]  7  7
+    ##  [8,]  8  8
+    ##  [9,]  9  9
+    ## [10,] 10 10
+
+> Different coercion rules. From the help: data.matrix: “Return the
+> matrix obtained by converting all the variables in a data frame to
+> numeric mode and then binding them together as the columns of a
+> matrix. Factors and ordered factors are replaced by their internal
+> codes.”
