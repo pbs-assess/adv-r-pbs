@@ -201,6 +201,31 @@ my_diag(x)
 
     ## [1]  1  4  9 16 25
 
+> Here is another method using matrix indexing:
+
+``` r
+my_diag <- function(x = matrix(1:25, nrow = 5)){
+  if(nrow(x) > ncol(x)) x <- t(x)
+  rseq <- c(1:nrow(x), 1:nrow(x))
+  x[matrix(rseq[order(rseq)], nrow = nrow(x), byrow = TRUE)]
+}
+my_diag()
+```
+
+    ## [1]  1  7 13 19 25
+
+``` r
+my_diag(matrix(1:36, nrow = 4))
+```
+
+    ## [1]  1  6 11 16
+
+``` r
+my_diag(matrix(1:24, nrow = 6))
+```
+
+    ## [1]  1  8 15 22
+
 6.  What does df\[is.na(df)\] \<- 0 do? How does it work?
 
 > Replaces all NAs with 0s
