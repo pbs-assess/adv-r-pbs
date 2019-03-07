@@ -188,7 +188,7 @@ x3
 
 > These are multidimensional arrays, with the vector of lengths of each
 > dimension given for the second argument. 1:5 doesn’t technically have
-> dimensions and is not an array, it is a vector.
+> dimensions and is not an array, it is an atomic vector.
 
 4.  An early draft used this code to illustrate structure():
 
@@ -457,8 +457,9 @@ sapply(j, "[[", 1)
 2.  Why do you need to use unlist() to convert a list to an atomic
     vector? Why doesn’t as.vector() work?
 
-> FIXME: the rules for coercion are complex and require their own
-> function
+> The rules for coercion are complex and require their own function. You
+> can also use `sapply()` as shown above. `sapply()` is slower but
+> easier in some situations.
 
 3.  Compare and contrast c() and unlist() when combining a date and
     date-time into a single vector.
@@ -491,7 +492,14 @@ unlist(z)
 
 1.  Can you have a data frame with zero rows? What about zero columns?
 
-> rows: yes, columns: no
+> Yes:
+
+``` r
+d <- data.frame()
+d
+```
+
+    ## data frame with 0 columns and 0 rows
 
 2.  What happens if you attempt to set rownames that are not unique?
 
@@ -519,6 +527,12 @@ t(df)
     ## y    1    2    3    4    5    6    7    8    9    10
 
 ``` r
+class(t(df))
+```
+
+    ## [1] "matrix"
+
+``` r
 t(t(df))
 ```
 
@@ -533,6 +547,12 @@ t(t(df))
     ##  [8,]  8  8
     ##  [9,]  9  9
     ## [10,] 10 10
+
+``` r
+class(t(t(df)))
+```
+
+    ## [1] "matrix"
 
 > The type is coerced
 

@@ -179,7 +179,7 @@ sapply(j, "[[", 1)
 
 2. Why do you need to use unlist() to convert a list to an atomic vector? Why doesn’t as.vector() work?
 
-> FIXME: the rules for coercion are complex and require their own function
+> The rules for coercion are complex and require their own function. You can also use `sapply()` as shown above. `sapply()` is slower but easier in some situations.
 
 3. Compare and contrast c() and unlist() when combining a date and date-time into a single vector.
 
@@ -198,7 +198,12 @@ unlist(z)
 
 1. Can you have a data frame with zero rows? What about zero columns?
 
-> rows: yes, columns: no
+> Yes:
+
+```{r}
+d <- data.frame()
+d
+```
 
 2. What happens if you attempt to set rownames that are not unique?
 
@@ -213,11 +218,14 @@ x <- data.frame(1:10)
 
 ```{r}
 df <- data.frame(x = 1:10, y = 1:10)
+class(df)
 t(df)
+class(t(df))
 t(t(df))
+class(t(t(df)))
 ```
 
-> The type is coerced
+> The type is coerced to `matrix`
 
  4. What does as.matrix() do when applied to a data frame with columns of different types? How does it differ from data.matrix()?
 
