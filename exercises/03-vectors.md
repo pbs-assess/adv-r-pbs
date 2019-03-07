@@ -39,7 +39,7 @@ Foundations: Vectors
 > don’t do partial matching with $ column selecting; easier creation
 > of list columns.
 
-> Useful tidbit - when changing a data frame into a tibble and you want
+> Useful snippet - when changing a data frame into a tibble and you want
 > to grab the rownames:
 
 ``` r
@@ -186,9 +186,9 @@ x3
     ## [4,]    4
     ## [5,]    5
 
-> FIXME: not sure what the best way to describe these is… They put the
-> values 1:5 into the 3 possible dimensions. FIXME: 1:5 doesn’t
-> technically have dimensions and is not an array
+> These are multidimensional arrays, with the vector of lengths of each
+> dimension given for the second argument. 1:5 doesn’t technically have
+> dimensions and is not an array, it is a vector.
 
 4.  An early draft used this code to illustrate structure():
 
@@ -406,9 +406,53 @@ levels(f3)
 
 1.  List all the ways that a list differs from an atomic vector.
 
-> FIXME: Lists can contain references to objects of multiple types;
-> lists always contain references to objects; lists can be recursive and
-> contain other lists…
+> Lists can contain references to objects of multiple types but atomic
+> vectors must all be the same type.
+
+``` r
+v <- 1:2
+j <- list(1, 2)
+v
+```
+
+    ## [1] 1 2
+
+``` r
+j
+```
+
+    ## [[1]]
+    ## [1] 1
+    ## 
+    ## [[2]]
+    ## [1] 2
+
+``` r
+v[[1]] <- "a"
+j[[1]] <- "a"
+v
+```
+
+    ## [1] "a" "2"
+
+``` r
+j
+```
+
+    ## [[1]]
+    ## [1] "a"
+    ## 
+    ## [[2]]
+    ## [1] 2
+
+``` r
+sapply(j, "[[", 1)
+```
+
+    ## [1] "a" "2"
+
+> Note that turning a list into a vector changes they types of elements
+> so they are all the same.
 
 2.  Why do you need to use unlist() to convert a list to an atomic
     vector? Why doesn’t as.vector() work?
