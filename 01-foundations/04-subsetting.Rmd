@@ -4,6 +4,7 @@ output: rmarkdown::github_document
 ---
 
 ## 4.2 Selecting multiple elements
+
 1. Fix each of the following common data frame subsetting errors:
 
 ```{r 4.2.1, eval=FALSE}
