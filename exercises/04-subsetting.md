@@ -180,7 +180,26 @@ x[upper.tri(x)]
 5.Implement your own function that extracts the diagonal entries from a
 matrix (it should behave like diag(x) where x is a matrix).
 
-> 
+``` r
+x <- outer(1:5, 1:5, FUN = "*")
+my_diag <- function(x) {
+  shortest_dimension <- min(ncol(x), nrow(x))
+  out <- numeric(shortest_dimension)
+  for (i in seq_len(shortest_dimension)) {
+    out[i] <- x[i, i]
+  }
+  out
+}
+diag(x)
+```
+
+    ## [1]  1  4  9 16 25
+
+``` r
+my_diag(x)
+```
+
+    ## [1]  1  4  9 16 25
 
 6.  What does df\[is.na(df)\] \<- 0 do? How does it work?
 
