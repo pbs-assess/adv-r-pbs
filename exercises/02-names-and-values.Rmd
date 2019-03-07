@@ -157,7 +157,7 @@ obj_size(y)
 
 ```{r}
 funs <- list(mean, sd, var)
-obj_size(funs)
+#obj_size(funs) - NOTE this crashes R completely for Chris on Windows
 #> 17,608 B
 ```
 
@@ -205,7 +205,7 @@ x[[1]] <- x
 
 > Only environments can contain themselves. Here, R creates a new object and assigns it the value of the original `x`. I.e. modify in place does not happen.
 
-2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?*
+<!-- 2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?* -->
 
 ```{r}
 f1 <- function(x) {
