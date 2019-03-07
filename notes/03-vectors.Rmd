@@ -23,3 +23,7 @@ x == NA
 - "To be useful with character subsetting (e.g. Section 4.5.1) names should be unique, and non-missing, but this is not enforced by R."
 
 - see `abind::abind()` and `dimnames()` for working with arrays
+
+- "Factors are built on top of an integer vector with two attributes: a class, “factor”, which makes it behave differently from regular integer vectors, and levels, which defines the set of allowed values."
+
+- "POSIXct vectors are built on top of double vectors, where the value represents the number of seconds since 1970-01-01."

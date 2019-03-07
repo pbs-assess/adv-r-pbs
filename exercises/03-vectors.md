@@ -201,17 +201,134 @@ Is the attribute missing, or is there something else special about it?
     attributes does it have? How does the dimensionality change as you
     tabulate more variables?
 
-> 
+<!-- end list -->
+
+``` r
+x <- table(factor(c("a", "b")))
+x
+```
+
+    ## 
+    ## a b 
+    ## 1 1
+
+``` r
+str(x)
+```
+
+    ##  'table' int [1:2(1d)] 1 1
+    ##  - attr(*, "dimnames")=List of 1
+    ##   ..$ : chr [1:2] "a" "b"
+
+``` r
+attributes(x)
+```
+
+    ## $dim
+    ## [1] 2
+    ## 
+    ## $dimnames
+    ## $dimnames[[1]]
+    ## [1] "a" "b"
+    ## 
+    ## 
+    ## $class
+    ## [1] "table"
+
+``` r
+x <- table(factor(c("a", "b", "c")))
+x
+```
+
+    ## 
+    ## a b c 
+    ## 1 1 1
+
+``` r
+attributes(x)
+```
+
+    ## $dim
+    ## [1] 3
+    ## 
+    ## $dimnames
+    ## $dimnames[[1]]
+    ## [1] "a" "b" "c"
+    ## 
+    ## 
+    ## $class
+    ## [1] "table"
 
 2.  What happens to a factor when you modify its levels?
 
-3.  
 <!-- end list -->
 
 ``` r
 f1 <- factor(letters)
-levels(f1) <- rev(levels(f1))
+f1
 ```
+
+    ##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+    ## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+``` r
+str(f1)
+```
+
+    ##  Factor w/ 26 levels "a","b","c","d",..: 1 2 3 4 5 6 7 8 9 10 ...
+
+``` r
+attributes(f1)
+```
+
+    ## $levels
+    ##  [1] "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q"
+    ## [18] "r" "s" "t" "u" "v" "w" "x" "y" "z"
+    ## 
+    ## $class
+    ## [1] "factor"
+
+``` r
+as.numeric(f1)
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+    ## [24] 24 25 26
+
+``` r
+levels(f1) <- rev(levels(f1))
+f1
+```
+
+    ##  [1] z y x w v u t s r q p o n m l k j i h g f e d c b a
+    ## Levels: z y x w v u t s r q p o n m l k j i h g f e d c b a
+
+``` r
+str(f1)
+```
+
+    ##  Factor w/ 26 levels "z","y","x","w",..: 1 2 3 4 5 6 7 8 9 10 ...
+
+``` r
+attributes(f1)
+```
+
+    ## $levels
+    ##  [1] "z" "y" "x" "w" "v" "u" "t" "s" "r" "q" "p" "o" "n" "m" "l" "k" "j"
+    ## [18] "i" "h" "g" "f" "e" "d" "c" "b" "a"
+    ## 
+    ## $class
+    ## [1] "factor"
+
+``` r
+as.numeric(f1)
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+    ## [24] 24 25 26
+
+> The ordering of the `levels` attribute changes but the underlying
+> values do not.
 
 3.  What does this code do? How do f2 and f3 differ from f1?
 
@@ -219,9 +336,58 @@ levels(f1) <- rev(levels(f1))
 
 ``` r
 f2 <- rev(factor(letters))
-
-f3 <- factor(letters, levels = rev(letters))
+f2
 ```
+
+    ##  [1] z y x w v u t s r q p o n m l k j i h g f e d c b a
+    ## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+``` r
+as.numeric(f2)
+```
+
+    ##  [1] 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10  9  8  7  6  5  4
+    ## [24]  3  2  1
+
+> f2 has reversed underlying values an levels in a different order
+
+``` r
+f3 <- factor(letters, levels = rev(letters))
+f3
+```
+
+    ##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+    ## Levels: z y x w v u t s r q p o n m l k j i h g f e d c b a
+
+``` r
+as.numeric(f1)
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+    ## [24] 24 25 26
+
+``` r
+as.numeric(f3)
+```
+
+    ##  [1] 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10  9  8  7  6  5  4
+    ## [24]  3  2  1
+
+``` r
+levels(f1)
+```
+
+    ##  [1] "z" "y" "x" "w" "v" "u" "t" "s" "r" "q" "p" "o" "n" "m" "l" "k" "j"
+    ## [18] "i" "h" "g" "f" "e" "d" "c" "b" "a"
+
+``` r
+levels(f3)
+```
+
+    ##  [1] "z" "y" "x" "w" "v" "u" "t" "s" "r" "q" "p" "o" "n" "m" "l" "k" "j"
+    ## [18] "i" "h" "g" "f" "e" "d" "c" "b" "a"
+
+> f3 has reversed underlying values but levels in the same order
 
 ## 3.5 Lists
 

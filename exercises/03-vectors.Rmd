@@ -103,23 +103,56 @@ But when you print that object you don’t see the comment attribute. Why? Is th
 
 1. What sort of object does table() return? What is its type? What attributes does it have? How does the dimensionality change as you tabulate more variables?
 
-> 
+```{r}
+x <- table(factor(c("a", "b")))
+x
+str(x)
+attributes(x)
+
+x <- table(factor(c("a", "b", "c")))
+x
+attributes(x)
+```
 
 2. What happens to a factor when you modify its levels?
-3. 
+
 ```{r}
 f1 <- factor(letters)
+f1
+str(f1)
+attributes(f1)
+as.numeric(f1)
+
 levels(f1) <- rev(levels(f1))
+f1
+str(f1)
+attributes(f1)
+as.numeric(f1)
 ```
+
+> The ordering of the `levels` attribute changes but the underlying values do not.
 
 3. What does this code do? How do f2 and f3 differ from f1?
 
 ```{r}
 f2 <- rev(factor(letters))
-
-f3 <- factor(letters, levels = rev(letters))
-
+f2
+as.numeric(f2)
 ```
+
+> f2 has reversed underlying values an levels in a different order
+
+```{r}
+f3 <- factor(letters, levels = rev(letters))
+f3
+as.numeric(f1)
+as.numeric(f3)
+levels(f1)
+levels(f3)
+```
+
+> f3 has reversed underlying values but levels in the same order
+
 ## 3.5 Lists
 
 1. List all the ways that a list differs from an atomic vector.
