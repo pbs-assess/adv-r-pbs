@@ -203,6 +203,36 @@ x <- list()
 x[[1]] <- x
 ```
 
+> Only environments can contain themselves. Here, R creates a new object and assigns it the value of the original `x`. I.e. modify in place does not happen.
+
 2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?*
 
+```{r}
+f1 <- function(x) {
+  for (i in seq_along(medians)) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+f2 <- function(x) {
+  for (i in 1:5) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+
+set.seed(1)
+x <- data.frame(matrix(runif(5 * 1e4), ncol = 5))
+medians <- vapply(x, median, numeric(1))
+x.list <- as.list(x)
+bench::mark(f1(x))
+bench::mark(f2(x.list))
+```
+
+> The version with lists ends up being about twice as fast.
+
 3. What happens if you attempt to use tracemem() on an environment?
+
+```{r}
+e <- rlang::env()
+# tracemem(e)
+# > Error in tracemem(e) : 'tracemem' is not useful for promise and environment objects
+```

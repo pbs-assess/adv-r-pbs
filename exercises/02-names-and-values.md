@@ -77,25 +77,25 @@ d <- 1:10
 lobstr::obj_addr(a)
 ```
 
-    ## [1] "0x7fc5a92e5570"
+    ## [1] "0x7ffc57a76838"
 
 ``` r
 lobstr::obj_addr(b)
 ```
 
-    ## [1] "0x7fc5a92e5570"
+    ## [1] "0x7ffc57a76838"
 
 ``` r
 lobstr::obj_addr(c)
 ```
 
-    ## [1] "0x7fc5a92e5570"
+    ## [1] "0x7ffc57a76838"
 
 ``` r
 lobstr::obj_addr(d)
 ```
 
-    ## [1] "0x7fc5a7a75c58"
+    ## [1] "0x7ffc568b41f8"
 
 > a, b, c are names pointing to the same object. d is a name pointing to
 > a different object that happens to have the same values.
@@ -112,7 +112,7 @@ mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fc5a8c24730>
+    ## <bytecode: 0x7ffc56198558>
     ## <environment: namespace:base>
 
 ``` r
@@ -121,7 +121,7 @@ base::mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fc5a8c24730>
+    ## <bytecode: 0x7ffc56198558>
     ## <environment: namespace:base>
 
 ``` r
@@ -130,7 +130,7 @@ get("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fc5a8c24730>
+    ## <bytecode: 0x7ffc56198558>
     ## <environment: namespace:base>
 
 ``` r
@@ -139,7 +139,7 @@ evalq(mean)
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fc5a8c24730>
+    ## <bytecode: 0x7ffc56198558>
     ## <environment: namespace:base>
 
 ``` r
@@ -148,38 +148,38 @@ match.fun("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fc5a8c24730>
+    ## <bytecode: 0x7ffc56198558>
     ## <environment: namespace:base>
 
 ``` r
 lobstr::obj_addr(mean)
 ```
 
-    ## [1] "0x7fc5a8c247d8"
+    ## [1] "0x7ffc56198670"
 
 ``` r
 lobstr::obj_addr(base::mean)
 ```
 
-    ## [1] "0x7fc5a8c247d8"
+    ## [1] "0x7ffc56198670"
 
 ``` r
 lobstr::obj_addr(get("mean"))
 ```
 
-    ## [1] "0x7fc5a8c247d8"
+    ## [1] "0x7ffc56198670"
 
 ``` r
 lobstr::obj_addr(evalq(mean))
 ```
 
-    ## [1] "0x7fc5a8c247d8"
+    ## [1] "0x7ffc56198670"
 
 ``` r
 lobstr::obj_addr(match.fun("mean"))
 ```
 
-    ## [1] "0x7fc5a8c247d8"
+    ## [1] "0x7ffc56198670"
 
 > Yes, they all point to the same underlying function object.
 
@@ -225,14 +225,14 @@ x <- c(1L, 2L, 3L)
 tracemem(x)
 ```
 
-    ## [1] "<0x7fc5a8ea90c8>"
+    ## [1] "<0x7ffc574f3d08>"
 
 ``` r
 x[[3]] <- 4
 ```
 
-    ## tracemem[0x7fc5a8ea90c8 -> 0x7fc5ac9ca188]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
-    ## tracemem[0x7fc5ac9ca188 -> 0x7fc5a8e96fe8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
+    ## tracemem[0x7ffc574f3d08 -> 0x7ffc5c387188]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
+    ## tracemem[0x7ffc5c387188 -> 0x7ffc5721b9d8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
 
 > FIXME This is starting with a vector of integers, but 4 is not an
 > integer to R, so I assume it coerces the class as well.
@@ -251,16 +251,16 @@ c <- list(b, a, 1:10)
 lobstr::ref(a, b, c)
 ```
 
-    ## [1:0x7fc5a9766250] <int> 
+    ## [1:0x7ffc56c31ca8] <int> 
     ##  
-    ## █ [2:0x7fc5a75daa88] <list> 
-    ## ├─[1:0x7fc5a9766250] 
-    ## └─[1:0x7fc5a9766250] 
+    ## █ [2:0x7ffc5636b3c8] <list> 
+    ## ├─[1:0x7ffc56c31ca8] 
+    ## └─[1:0x7ffc56c31ca8] 
     ##  
-    ## █ [3:0x7fc5a8f0ec38] <list> 
-    ## ├─[2:0x7fc5a75daa88] 
-    ## ├─[1:0x7fc5a9766250] 
-    ## └─[4:0x7fc5a7c49600] <int>
+    ## █ [3:0x7ffc5732f1e8] <list> 
+    ## ├─[2:0x7ffc5636b3c8] 
+    ## ├─[1:0x7ffc56c31ca8] 
+    ## └─[4:0x7ffc56b8c9f8] <int>
 
 > `b` is a list and its contents make two references to `a`. `c` is a
 > list in which the first element references `b` the second element
@@ -393,9 +393,60 @@ x <- list()
 x[[1]] <- x
 ```
 
+> Only environments can contain themselves. Here, R creates a new object
+> and assigns it the value of the original `x`. I.e. modify in place
+> does not happen.
+
 2.  Wrap the two methods for subtracting medians into two functions,
     then use the ‘bench’ package (Hester 2018) to carefully compare
     their speeds. How does performance change as the number of columns
     increase?\*
 
+<!-- end list -->
+
+``` r
+f1 <- function(x) {
+  for (i in seq_along(medians)) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+f2 <- function(x) {
+  for (i in 1:5) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+
+set.seed(1)
+x <- data.frame(matrix(runif(5 * 1e4), ncol = 5))
+medians <- vapply(x, median, numeric(1))
+x.list <- as.list(x)
+bench::mark(f1(x))
+```
+
+    ## # A tibble: 1 x 10
+    ##   expression    min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
+    ##   <chr>      <bch:> <bch> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
+    ## 1 f1(x)      79.9µs 124µs  110µs 444µs     8036.    4.55MB    41  2983
+    ## # … with 1 more variable: total_time <bch:tm>
+
+``` r
+bench::mark(f2(x.list))
+```
+
+    ## # A tibble: 1 x 10
+    ##   expression    min   mean median   max `itr/sec` mem_alloc  n_gc n_itr
+    ##   <chr>      <bch:> <bch:> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
+    ## 1 f2(x.list) 32.8µs 59.6µs 56.2µs 307µs    16770.     433KB    57  4304
+    ## # … with 1 more variable: total_time <bch:tm>
+
+> The version with lists ends up being about twice as fast.
+
 3.  What happens if you attempt to use tracemem() on an environment?
+
+<!-- end list -->
+
+``` r
+e <- rlang::env()
+# tracemem(e)
+# > Error in tracemem(e) : 'tracemem' is not useful for promise and environment objects
+```

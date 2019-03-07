@@ -24,3 +24,36 @@ output: rmarkdown::github_document
 - "because R uses a global string pool character vectors take up less memory than you might expect"
 
 - "obj_size(x) + obj_size(y) will only equal obj_size(x, y) if there are no shared values."
+
+- Modify-in-place: "As we’ve seen above, modifying an R object usually creates a copy. There are two exceptions: 
+Objects with a single binding get a special performance optimisation.
+Environments, a special type of object, are always modified in place"
+
+- hard to predict whether or not a copy will occur; base R functions create exceptions
+
+- In comparison to using data frames in a loop, "We can reduce the number of copies by using a list instead of a data frame. Modifying a list uses internal C code, so the refs are not incremented and only a single copy is made:"
+
+Lots of copies:
+
+```{r}
+x <- data.frame(matrix(runif(5 * 1e4), ncol = 5))
+medians <- vapply(x, median, numeric(1))
+
+for (i in seq_along(medians)) {
+  x[[i]] <- x[[i]] - medians[[i]]
+}
+```
+
+Only a single copy:
+
+```{r}
+y <- as.list(x)
+cat(tracemem(y), "\n")
+#> <0x7f80c5c3de20>
+  
+for (i in 1:5) {
+  y[[i]] <- y[[i]] - medians[[i]]
+}
+```
+
+- environments are always modified in place
