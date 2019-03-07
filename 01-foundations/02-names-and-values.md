@@ -1,4 +1,4 @@
-Foundations sections 1 to 4
+Foundations: Names and Values
 ================
 
 ``` r
@@ -67,25 +67,25 @@ d <- 1:10
 lobstr::obj_addr(a)
 ```
 
-    ## [1] "0x7fabf3d568f0"
+    ## [1] "0x7fa4eea7fcf0"
 
 ``` r
 lobstr::obj_addr(b)
 ```
 
-    ## [1] "0x7fabf3d568f0"
+    ## [1] "0x7fa4eea7fcf0"
 
 ``` r
 lobstr::obj_addr(c)
 ```
 
-    ## [1] "0x7fabf3d568f0"
+    ## [1] "0x7fa4eea7fcf0"
 
 ``` r
 lobstr::obj_addr(d)
 ```
 
-    ## [1] "0x7fabf39655f8"
+    ## [1] "0x7fa4eefc0df8"
 
 a, b, c are names pointing to the same object. d is a name pointing to a
 different object that happens to have the same values.
@@ -100,7 +100,7 @@ mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fabf7a2c008>
+    ## <bytecode: 0x7fa4f3a97808>
     ## <environment: namespace:base>
 
 ``` r
@@ -109,7 +109,7 @@ base::mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fabf7a2c008>
+    ## <bytecode: 0x7fa4f3a97808>
     ## <environment: namespace:base>
 
 ``` r
@@ -118,7 +118,7 @@ get("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fabf7a2c008>
+    ## <bytecode: 0x7fa4f3a97808>
     ## <environment: namespace:base>
 
 ``` r
@@ -127,7 +127,7 @@ evalq(mean)
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fabf7a2c008>
+    ## <bytecode: 0x7fa4f3a97808>
     ## <environment: namespace:base>
 
 ``` r
@@ -136,38 +136,38 @@ match.fun("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fabf7a2c008>
+    ## <bytecode: 0x7fa4f3a97808>
     ## <environment: namespace:base>
 
 ``` r
 lobstr::obj_addr(mean)
 ```
 
-    ## [1] "0x7fabf7a2c0b0"
+    ## [1] "0x7fa4f3a978b0"
 
 ``` r
 lobstr::obj_addr(base::mean)
 ```
 
-    ## [1] "0x7fabf7a2c0b0"
+    ## [1] "0x7fa4f3a978b0"
 
 ``` r
 lobstr::obj_addr(get("mean"))
 ```
 
-    ## [1] "0x7fabf7a2c0b0"
+    ## [1] "0x7fa4f3a978b0"
 
 ``` r
 lobstr::obj_addr(evalq(mean))
 ```
 
-    ## [1] "0x7fabf7a2c0b0"
+    ## [1] "0x7fa4f3a978b0"
 
 ``` r
 lobstr::obj_addr(match.fun("mean"))
 ```
 
-    ## [1] "0x7fabf7a2c0b0"
+    ## [1] "0x7fa4f3a978b0"
 
 Yes, they all point to the same underlying function object.
 
@@ -207,14 +207,14 @@ x <- c(1L, 2L, 3L)
 tracemem(x)
 ```
 
-    ## [1] "<0x7fabf897a088>"
+    ## [1] "<0x7fa4f2aca888>"
 
 ``` r
 x[[3]] <- 4
 ```
 
-    ## tracemem[0x7fabf897a088 -> 0x7fabf7bb5bc8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
-    ## tracemem[0x7fabf7bb5bc8 -> 0x7fabf6fb9858]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
+    ## tracemem[0x7fa4f2aca888 -> 0x7fa4eee935c8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
+    ## tracemem[0x7fa4eee935c8 -> 0x7fa4f0360658]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
 
 *3. Sketch out the relationship between the following objects:*
 

@@ -1,5 +1,5 @@
 ---
-title: "Foundations sections 1 to 4"
+title: "Foundations: Names and Values"
 output: rmarkdown::github_document
 ---
 
