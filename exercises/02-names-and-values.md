@@ -102,25 +102,25 @@ d <- 1:10
 lobstr::obj_addr(a)
 ```
 
-    ## [1] "0x9f49e50"
+    ## [1] "0x77da8f8"
 
 ``` r
 lobstr::obj_addr(b)
 ```
 
-    ## [1] "0x9f49e50"
+    ## [1] "0x77da8f8"
 
 ``` r
 lobstr::obj_addr(c)
 ```
 
-    ## [1] "0x9f49e50"
+    ## [1] "0x77da8f8"
 
 ``` r
 lobstr::obj_addr(d)
 ```
 
-    ## [1] "0x9d97710"
+    ## [1] "0x611a060"
 
 > a, b, c are names pointing to the same object. d is a name pointing to
 > a different object that happens to have the same values.
@@ -137,7 +137,7 @@ mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000078bfde0>
+    ## <bytecode: 0x0000000007bcd668>
     ## <environment: namespace:base>
 
 ``` r
@@ -146,7 +146,7 @@ base::mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000078bfde0>
+    ## <bytecode: 0x0000000007bcd668>
     ## <environment: namespace:base>
 
 ``` r
@@ -155,7 +155,7 @@ get("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000078bfde0>
+    ## <bytecode: 0x0000000007bcd668>
     ## <environment: namespace:base>
 
 ``` r
@@ -164,7 +164,7 @@ evalq(mean)
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000078bfde0>
+    ## <bytecode: 0x0000000007bcd668>
     ## <environment: namespace:base>
 
 ``` r
@@ -173,38 +173,38 @@ match.fun("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000078bfde0>
+    ## <bytecode: 0x0000000007bcd668>
     ## <environment: namespace:base>
 
 ``` r
 lobstr::obj_addr(mean)
 ```
 
-    ## [1] "0x78bfe88"
+    ## [1] "0x7bcd710"
 
 ``` r
 lobstr::obj_addr(base::mean)
 ```
 
-    ## [1] "0x78bfe88"
+    ## [1] "0x7bcd710"
 
 ``` r
 lobstr::obj_addr(get("mean"))
 ```
 
-    ## [1] "0x78bfe88"
+    ## [1] "0x7bcd710"
 
 ``` r
 lobstr::obj_addr(evalq(mean))
 ```
 
-    ## [1] "0x78bfe88"
+    ## [1] "0x7bcd710"
 
 ``` r
 lobstr::obj_addr(match.fun("mean"))
 ```
 
-    ## [1] "0x78bfe88"
+    ## [1] "0x7bcd710"
 
 > Yes, they all point to the same underlying function object.
 
@@ -250,14 +250,14 @@ x <- c(1L, 2L, 3L)
 tracemem(x)
 ```
 
-    ## [1] "<000000000DDD6A00>"
+    ## [1] "<000000000E0176A0>"
 
 ``` r
 x[[3]] <- 4
 ```
 
-    ## tracemem[0x000000000ddd6a00 -> 0x000000000e1231f8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
-    ## tracemem[0x000000000e1231f8 -> 0x000000000dde4bc0]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
+    ## tracemem[0x000000000e0176a0 -> 0x000000000e037bd0]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
+    ## tracemem[0x000000000e037bd0 -> 0x000000000e1656b8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
 
 > FIXME This is starting with a vector of integers, but 4 is not an
 > integer to R, so I assume it coerces the class as well.
@@ -276,16 +276,16 @@ c <- list(b, a, 1:10)
 lobstr::ref(a, b, c)
 ```
 
-    ## [1:0xc6e7c50] <int> 
+    ## [1:0x9e15eb8] <int> 
     ##  
-    ## o [2:0xded68c0] <list> 
-    ## +-[1:0xc6e7c50] 
-    ## \-[1:0xc6e7c50] 
+    ## o [2:0xce49e88] <list> 
+    ## +-[1:0x9e15eb8] 
+    ## \-[1:0x9e15eb8] 
     ##  
-    ## o [3:0xe4d01c8] <list> 
-    ## +-[2:0xded68c0] 
-    ## +-[1:0xc6e7c50] 
-    ## \-[4:0xc7d4240] <int>
+    ## o [3:0xddb1e80] <list> 
+    ## +-[2:0xce49e88] 
+    ## +-[1:0x9e15eb8] 
+    ## \-[4:0x9add8c0] <int>
 
 > `b` is a list and its contents make two references to `a`. `c` is a
 > list in which the first element references `b` the second element
@@ -415,10 +415,14 @@ x[[1]] <- x
 
 > Only environments can contain themselves. Here, R creates a new object
 > and assigns it the value of the original `x`. I.e. modify in place
-> does not
-happen.
+> does not happen.
 
-<!-- 2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?* -->
+2.  Wrap the two methods for subtracting medians into two functions,
+    then use the ‘bench’ package (Hester 2018) to carefully compare
+    their speeds. How does performance change as the number of columns
+    increase?\*
+
+<!-- end list -->
 
 ``` r
 f1 <- function(x) {
@@ -440,9 +444,9 @@ bench::mark(f1(x))
 ```
 
     ## # A tibble: 1 x 10
-    ##   expression    min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
-    ##   <chr>      <bch:> <bch> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
-    ## 1 f1(x)      80.7us  99us 87.8us 313us    10102.     522KB    57  3688
+    ##   expression    min   mean median   max `itr/sec` mem_alloc  n_gc n_itr
+    ##   <chr>      <bch:> <bch:> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
+    ## 1 f1(x)      80.7us 99.3us 88.1us 529us    10072.     522KB    56  3698
     ## # ... with 1 more variable: total_time <bch:tm>
 
 ``` r
@@ -452,7 +456,7 @@ bench::mark(f2(x.list))
     ## # A tibble: 1 x 10
     ##   expression    min   mean median   max `itr/sec` mem_alloc  n_gc n_itr
     ##   <chr>      <bch:> <bch:> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
-    ## 1 f2(x.list) 26.8us 35.8us 32.8us 195us    27910.     412KB    97  8460
+    ## 1 f2(x.list) 27.5us 37.8us 32.8us 329us    26454.     412KB    87  7567
     ## # ... with 1 more variable: total_time <bch:tm>
 
 > The version with lists ends up being about twice as fast.
