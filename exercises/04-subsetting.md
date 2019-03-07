@@ -143,6 +143,14 @@ x[NA]
 
     ## [1] NA NA NA NA NA
 
+``` r
+x[NA_real_]
+```
+
+    ## [1] NA
+
+> FIXME
+
 3.  What does upper.tri() return? How does subsetting a matrix with it
     work? Do we need any additional subsetting rules to describe its
     behaviour?
@@ -156,10 +164,16 @@ x[upper.tri(x)]
 
     ##  [1]  2  3  6  4  8 12  5 10 15 20
 
+> It returns the upper triangle of the matrix. Second part (FIXME?): it
+> behaves like drop = TRUE?
+
 4.  Why does mtcars\[1:20\] return an error? How does it differ from the
     similar mtcars\[1:20, \]?
 
-> t does not know if 1:20 are the rows or columns.
+> Indexing a data frame like that behaves like a list so it tries to
+> select the first twenty columns of the data frame but there are not
+> that many columns. The second option correctly selects the first
+> twenty rows.
 
 5.Implement your own function that extracts the diagonal entries from a
 matrix (it should behave like diag(x) where x is a matrix).
