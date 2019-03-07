@@ -192,8 +192,21 @@ b[[2]][[1]] <- 10
 obj_size(b)
 obj_size(a, b)
 ```
-
 > The last line above is now twice the size because both elements of b reference different objects than a.
+
+> Another way to look at this is to use `lobstr::ref()`:
+
+```{r}
+x <- list(1:10)
+lobstr::ref(x)
+```
+> After the list is created, we set an element of it to be the list itself. One would expect some sort of recursive behaviour, but..
+
+```{r}
+x[[2]] <- x
+lobstr::ref(x)
+```
+> The second list element is a simple memory address copy of the first, with a new memory address being given to the original.
 
 # 2.5.3
 
@@ -204,7 +217,15 @@ x <- list()
 x[[1]] <- x
 ```
 
-> Only environments can contain themselves. Here, R creates a new object and assigns it the value of the original `x`. I.e. modify in place does not happen.
+> Only environments can contain themselves. Here, R creates a new object and assigns it the value of the original `x`. I.e. modify in place does not happen:
+
+```{r}
+x <- list()
+lobstr::ref(x)
+x[[1]] <- x
+lobstr::ref(x)
+```
+> After the second call, the original list reference is now the sublist reference and the outer list reference has been given a new address.
 
 2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?*
 
