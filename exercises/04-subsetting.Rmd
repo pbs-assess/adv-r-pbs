@@ -7,22 +7,31 @@ output: rmarkdown::github_document
 
 1. Fix each of the following common data frame subsetting errors:
 
-```{r 4.2.1, eval=FALSE}
+```{r, eval=FALSE}
 mtcars[mtcars$cyl = 4, ]
 mtcars[-1:4, ]
 mtcars[mtcars$cyl <= 5]
 mtcars[mtcars$cyl == 4 | 6, ]
 ```
 
+```{r}
+mtcars[mtcars$cyl == 4, ]
+mtcars[-c(1:4), ]
+mtcars[mtcars$cyl <= 5, ]
+mtcars[mtcars$cyl %in% c(4, 6), ]
+# or
+mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
+```
+
 2. Why does the following code yield five missing values? (Hint: why is it different from x[NA_real_]?)
 
-```{r 4.2.2, eval=FALSE}
+```{r}
 x <- 1:5
 x[NA]
 ```
 3. What does upper.tri() return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
-```{r 4.2.3, eval=FALSE}
+```{r}
 x <- outer(1:5, 1:5, FUN = "*")
 x[upper.tri(x)]
 ```
