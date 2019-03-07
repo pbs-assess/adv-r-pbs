@@ -4,6 +4,7 @@ output: rmarkdown::github_document
 ---
 
 ```{r}
+library(tidyverse)
 library(lobstr)
 ```
 
@@ -228,6 +229,50 @@ bench::mark(f2(x.list))
 ```
 
 > The version with lists ends up being about twice as fast.
+
+> This is a more involved example showing `bench::press()`
+
+```{r}
+set.seed(42)
+sub.med <- function(x, m){
+    for (i in seq_along(m)) {
+      x[[i]] <- x[[i]] - m[[i]]
+    }
+  }
+
+results <- bench::press(
+  rows = 50000,
+  cols = c(5, 50, 500, 2000),
+  rep = 1,
+  {
+    dat <- data.frame(matrix(runif(rows), ncol = cols))
+    med <- vapply(dat, median, numeric(1))
+    bench::mark(
+      df  = sub.med(dat, med),
+      lst = sub.med(as.list(dat), med)
+   )
+  }
+)
+  
+results %>%
+  unnest() %>%
+  select(expression, cols, Time = total_time) %>%
+  distinct() %>%
+  mutate(expression = replace(expression, expression == "df", "Data Frame"),
+         expression = replace(expression, expression == "lst", "List"),
+         Time = as.numeric(Time)) %>%
+  ggplot(aes(x = Time, y = cols, color = expression)) +
+  geom_point() +
+  geom_path(size = 1) +
+  xlim(c(0, NA)) +
+  ylim(c(0, NA)) +
+  labs(x = "Time to finish",
+       y = "Number of columns in data frame",
+       fill = "") +
+  scale_color_discrete(name = "Object type") +
+  ggtitle("Times for for loop to run") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
 
 3. What happens if you attempt to use tracemem() on an environment?
 

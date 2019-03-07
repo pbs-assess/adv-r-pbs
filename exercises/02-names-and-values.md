@@ -2,6 +2,31 @@ Foundations: Names and Values
 ================
 
 ``` r
+library(tidyverse)
+```
+
+    ## -- Attaching packages ----------------------------------------------------------------------------------------- tidyverse 1.2.1 --
+
+    ## v ggplot2 3.1.0       v purrr   0.3.0  
+    ## v tibble  2.0.1       v dplyr   0.8.0.1
+    ## v tidyr   0.8.2       v stringr 1.4.0  
+    ## v readr   1.2.1       v forcats 0.3.0
+
+    ## Warning: package 'tibble' was built under R version 3.5.2
+
+    ## Warning: package 'tidyr' was built under R version 3.5.2
+
+    ## Warning: package 'purrr' was built under R version 3.5.2
+
+    ## Warning: package 'dplyr' was built under R version 3.5.2
+
+    ## Warning: package 'stringr' was built under R version 3.5.2
+
+    ## -- Conflicts -------------------------------------------------------------------------------------------- tidyverse_conflicts() --
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
 library(lobstr)
 ```
 
@@ -77,25 +102,25 @@ d <- 1:10
 lobstr::obj_addr(a)
 ```
 
-    ## [1] "0x7c41b50"
+    ## [1] "0x9f49e50"
 
 ``` r
 lobstr::obj_addr(b)
 ```
 
-    ## [1] "0x7c41b50"
+    ## [1] "0x9f49e50"
 
 ``` r
 lobstr::obj_addr(c)
 ```
 
-    ## [1] "0x7c41b50"
+    ## [1] "0x9f49e50"
 
 ``` r
 lobstr::obj_addr(d)
 ```
 
-    ## [1] "0x767d158"
+    ## [1] "0x9d97710"
 
 > a, b, c are names pointing to the same object. d is a name pointing to
 > a different object that happens to have the same values.
@@ -112,7 +137,7 @@ mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000070fd398>
+    ## <bytecode: 0x00000000078bfde0>
     ## <environment: namespace:base>
 
 ``` r
@@ -121,7 +146,7 @@ base::mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000070fd398>
+    ## <bytecode: 0x00000000078bfde0>
     ## <environment: namespace:base>
 
 ``` r
@@ -130,7 +155,7 @@ get("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000070fd398>
+    ## <bytecode: 0x00000000078bfde0>
     ## <environment: namespace:base>
 
 ``` r
@@ -139,7 +164,7 @@ evalq(mean)
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000070fd398>
+    ## <bytecode: 0x00000000078bfde0>
     ## <environment: namespace:base>
 
 ``` r
@@ -148,38 +173,38 @@ match.fun("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x00000000070fd398>
+    ## <bytecode: 0x00000000078bfde0>
     ## <environment: namespace:base>
 
 ``` r
 lobstr::obj_addr(mean)
 ```
 
-    ## [1] "0x70fd440"
+    ## [1] "0x78bfe88"
 
 ``` r
 lobstr::obj_addr(base::mean)
 ```
 
-    ## [1] "0x70fd440"
+    ## [1] "0x78bfe88"
 
 ``` r
 lobstr::obj_addr(get("mean"))
 ```
 
-    ## [1] "0x70fd440"
+    ## [1] "0x78bfe88"
 
 ``` r
 lobstr::obj_addr(evalq(mean))
 ```
 
-    ## [1] "0x70fd440"
+    ## [1] "0x78bfe88"
 
 ``` r
 lobstr::obj_addr(match.fun("mean"))
 ```
 
-    ## [1] "0x70fd440"
+    ## [1] "0x78bfe88"
 
 > Yes, they all point to the same underlying function object.
 
@@ -225,14 +250,14 @@ x <- c(1L, 2L, 3L)
 tracemem(x)
 ```
 
-    ## [1] "<000000000C259BF8>"
+    ## [1] "<000000000DDD6A00>"
 
 ``` r
 x[[3]] <- 4
 ```
 
-    ## tracemem[0x000000000c259bf8 -> 0x000000000c2e2008]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
-    ## tracemem[0x000000000c2e2008 -> 0x000000000c2dbfe8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
+    ## tracemem[0x000000000ddd6a00 -> 0x000000000e1231f8]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
+    ## tracemem[0x000000000e1231f8 -> 0x000000000dde4bc0]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
 
 > FIXME This is starting with a vector of integers, but 4 is not an
 > integer to R, so I assume it coerces the class as well.
@@ -251,16 +276,16 @@ c <- list(b, a, 1:10)
 lobstr::ref(a, b, c)
 ```
 
-    ## [1:0xc528df0] <int> 
+    ## [1:0xc6e7c50] <int> 
     ##  
-    ## o [2:0xc51fc28] <list> 
-    ## +-[1:0xc528df0] 
-    ## \-[1:0xc528df0] 
+    ## o [2:0xded68c0] <list> 
+    ## +-[1:0xc6e7c50] 
+    ## \-[1:0xc6e7c50] 
     ##  
-    ## o [3:0xc5d5878] <list> 
-    ## +-[2:0xc51fc28] 
-    ## +-[1:0xc528df0] 
-    ## \-[4:0xc5fc390] <int>
+    ## o [3:0xe4d01c8] <list> 
+    ## +-[2:0xded68c0] 
+    ## +-[1:0xc6e7c50] 
+    ## \-[4:0xc7d4240] <int>
 
 > `b` is a list and its contents make two references to `a`. `c` is a
 > list in which the first element references `b` the second element
@@ -415,9 +440,9 @@ bench::mark(f1(x))
 ```
 
     ## # A tibble: 1 x 10
-    ##   expression    min   mean median   max `itr/sec` mem_alloc  n_gc n_itr
-    ##   <chr>      <bch:> <bch:> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
-    ## 1 f1(x)      79.7us 94.1us 85.7us 313us    10628.     531KB    78  4170
+    ##   expression    min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
+    ##   <chr>      <bch:> <bch> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
+    ## 1 f1(x)      80.7us  99us 87.8us 313us    10102.     522KB    57  3688
     ## # ... with 1 more variable: total_time <bch:tm>
 
 ``` r
@@ -425,12 +450,74 @@ bench::mark(f2(x.list))
 ```
 
     ## # A tibble: 1 x 10
-    ##   expression   min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
-    ##   <chr>      <bch> <bch> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
-    ## 1 f2(x.list)  25us  36us 32.8us 252us    27800.     411KB   100  9660
+    ##   expression    min   mean median   max `itr/sec` mem_alloc  n_gc n_itr
+    ##   <chr>      <bch:> <bch:> <bch:> <bch>     <dbl> <bch:byt> <dbl> <int>
+    ## 1 f2(x.list) 26.8us 35.8us 32.8us 195us    27910.     412KB    97  8460
     ## # ... with 1 more variable: total_time <bch:tm>
 
 > The version with lists ends up being about twice as fast.
+
+> This is a more involved example showing `bench::press()`
+
+``` r
+set.seed(42)
+sub.med <- function(x, m){
+    for (i in seq_along(m)) {
+      x[[i]] <- x[[i]] - m[[i]]
+    }
+  }
+
+results <- bench::press(
+  rows = 50000,
+  cols = c(5, 50, 500, 2000),
+  rep = 1,
+  {
+    dat <- data.frame(matrix(runif(rows), ncol = cols))
+    med <- vapply(dat, median, numeric(1))
+    bench::mark(
+      df  = sub.med(dat, med),
+      lst = sub.med(as.list(dat), med)
+   )
+  }
+)
+```
+
+    ## Running with:
+    ##    rows  cols   rep
+
+    ## 1 50000     5     1
+
+    ## 2 50000    50     1
+
+    ## 3 50000   500     1
+
+    ## 4 50000  2000     1
+
+    ## Warning: Some expressions had a GC in every iteration; so filtering is
+    ## disabled.
+
+``` r
+results %>%
+  unnest() %>%
+  select(expression, cols, Time = total_time) %>%
+  distinct() %>%
+  mutate(expression = replace(expression, expression == "df", "Data Frame"),
+         expression = replace(expression, expression == "lst", "List"),
+         Time = as.numeric(Time)) %>%
+  ggplot(aes(x = Time, y = cols, color = expression)) +
+  geom_point() +
+  geom_path(size = 1) +
+  xlim(c(0, NA)) +
+  ylim(c(0, NA)) +
+  labs(x = "Time to finish",
+       y = "Number of columns in data frame",
+       fill = "") +
+  scale_color_discrete(name = "Object type") +
+  ggtitle("Times for for loop to run") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+![](02-names-and-values_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 3.  What happens if you attempt to use tracemem() on an environment?
 
