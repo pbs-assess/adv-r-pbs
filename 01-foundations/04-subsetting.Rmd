@@ -1,8 +1,6 @@
 ---
 title: "Foundations - Names and Values"
-author: "DFO people"
-date: " March 2019"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 # Subsetting #
@@ -23,7 +21,6 @@ mtcars[mtcars$cyl == 4 | 6, ]
 x <- 1:5
 x[NA]
 #> [1] NA NA NA NA NA
-
 ```
 3. What does upper.tri() return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 

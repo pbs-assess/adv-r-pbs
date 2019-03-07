@@ -1,8 +1,6 @@
 ---
 title: "Foundations - Names and Values"
-author: "DFO people"
-date: " March 2019"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 # Vectors #
@@ -62,8 +60,6 @@ But when you print that object you don’t see the comment attribute. Why? Is th
 
 ## 3.4 S3 Atomic vectors  ##
 
-
-
 1. What sort of object does table() return? What is its type? What attributes does it have? How does the dimensionality change as you tabulate more variables?
 
 > A:
@@ -81,6 +77,7 @@ levels(f1) <- rev(levels(f1))
 f2 <- rev(factor(letters))
 
 f3 <- factor(letters, levels = rev(letters))
+
 ```
 ## 3.5 Lists  ##
 
