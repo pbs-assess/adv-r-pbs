@@ -67,25 +67,25 @@ d <- 1:10
 lobstr::obj_addr(a)
 ```
 
-    ## [1] "0x7fde5f51d738"
+    ## [1] "0x7ff250bcf8f0"
 
 ``` r
 lobstr::obj_addr(b)
 ```
 
-    ## [1] "0x7fde5f51d738"
+    ## [1] "0x7ff250bcf8f0"
 
 ``` r
 lobstr::obj_addr(c)
 ```
 
-    ## [1] "0x7fde5f51d738"
+    ## [1] "0x7ff250bcf8f0"
 
 ``` r
 lobstr::obj_addr(d)
 ```
 
-    ## [1] "0x7fde5eb32218"
+    ## [1] "0x7ff251a285f8"
 
 a, b, c are names pointing to the same object. d is a name pointing to a
 different object that happens to have the same values.
@@ -100,7 +100,7 @@ mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fde63128f90>
+    ## <bytecode: 0x7ff251f7de08>
     ## <environment: namespace:base>
 
 ``` r
@@ -109,7 +109,7 @@ base::mean
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fde63128f90>
+    ## <bytecode: 0x7ff251f7de08>
     ## <environment: namespace:base>
 
 ``` r
@@ -118,7 +118,7 @@ get("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fde63128f90>
+    ## <bytecode: 0x7ff251f7de08>
     ## <environment: namespace:base>
 
 ``` r
@@ -127,7 +127,7 @@ evalq(mean)
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fde63128f90>
+    ## <bytecode: 0x7ff251f7de08>
     ## <environment: namespace:base>
 
 ``` r
@@ -136,38 +136,38 @@ match.fun("mean")
 
     ## function (x, ...) 
     ## UseMethod("mean")
-    ## <bytecode: 0x7fde63128f90>
+    ## <bytecode: 0x7ff251f7de08>
     ## <environment: namespace:base>
 
 ``` r
 lobstr::obj_addr(mean)
 ```
 
-    ## [1] "0x7fde63129038"
+    ## [1] "0x7ff251f7deb0"
 
 ``` r
 lobstr::obj_addr(base::mean)
 ```
 
-    ## [1] "0x7fde63129038"
+    ## [1] "0x7ff251f7deb0"
 
 ``` r
 lobstr::obj_addr(get("mean"))
 ```
 
-    ## [1] "0x7fde63129038"
+    ## [1] "0x7ff251f7deb0"
 
 ``` r
 lobstr::obj_addr(evalq(mean))
 ```
 
-    ## [1] "0x7fde63129038"
+    ## [1] "0x7ff251f7deb0"
 
 ``` r
 lobstr::obj_addr(match.fun("mean"))
 ```
 
-    ## [1] "0x7fde63129038"
+    ## [1] "0x7ff251f7deb0"
 
 Yes, they all point to the same underlying function object.
 
@@ -193,3 +193,57 @@ Duplicated values are altered by make.unique."
 “A syntactically valid name consists of letters, numbers and the dot or
 underline characters and starts with a letter or the dot not followed by
 a number.”
+
+# 2.3.6
+
+*1. Why is tracemem(1:10) not useful?*
+
+*2. Explain why tracemem() shows two copies when you run this code.
+Hint: carefully look at the difference between this code and the code
+shown earlier in the section.*
+
+``` r
+x <- c(1L, 2L, 3L)
+tracemem(x)
+```
+
+    ## [1] "<0x7ff25536b388>"
+
+``` r
+x[[3]] <- 4
+```
+
+    ## tracemem[0x7ff25536b388 -> 0x7ff25541d288]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous> 
+    ## tracemem[0x7ff25541d288 -> 0x7ff255440c58]: eval eval withVisible withCallingHandlers handle timing_fn evaluate_call <Anonymous> evaluate in_dir block_exec call_block process_group.block process_group withCallingHandlers process_file <Anonymous> <Anonymous>
+
+*3. Sketch out the relationship between the following objects:*
+
+``` r
+a <- 1:10
+c <- list(b, a, 1:10)
+b <- list(a, a)
+```
+
+*4. What happens when you run this code?*
+
+``` r
+x <- list(1:10)
+x[[2]] <- x
+```
+
+Draw a picture.
+
+# 2.5.3
+
+*1. Explain why the following code doesn’t create a circular list.*
+
+``` r
+x <- list()
+x[[1]] <- x
+```
+
+*2. Wrap the two methods for subtracting medians into two functions,
+then use the ‘bench’ package (Hester 2018) to carefully compare their
+speeds. How does performance change as the number of columns increase?*
+
+*3. What happens if you attempt to use tracemem() on an environment?*

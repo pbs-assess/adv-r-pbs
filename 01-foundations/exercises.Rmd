@@ -95,3 +95,48 @@ Read the help. E.g. "The character "X" is prepended if necessary. All invalid ch
 *5. I slightly simplified the rules that govern syntactic names. Why is .123e1 not a syntactic name? Read ?make.names for the full details.*
 
 "A syntactically valid name consists of letters, numbers and the dot or underline characters and starts with a letter or the dot not followed by a number."
+
+# 2.3.6
+
+*1. Why is tracemem(1:10) not useful?*
+
+*2. Explain why tracemem() shows two copies when you run this code. Hint: carefully look at the difference between this code and the code shown earlier in the section.*
+
+```{r}
+x <- c(1L, 2L, 3L)
+tracemem(x)
+```
+
+```{r}
+x[[3]] <- 4
+```
+
+*3. Sketch out the relationship between the following objects:*
+
+```{r}
+a <- 1:10
+c <- list(b, a, 1:10)
+b <- list(a, a)
+```
+
+*4. What happens when you run this code?*
+
+```{r}
+x <- list(1:10)
+x[[2]] <- x
+```
+
+Draw a picture.
+
+# 2.5.3
+
+*1. Explain why the following code doesn’t create a circular list.*
+
+```{r}
+x <- list()
+x[[1]] <- x
+```
+
+*2. Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package (Hester 2018) to carefully compare their speeds. How does performance change as the number of columns increase?*
+
+*3. What happens if you attempt to use tracemem() on an environment?*
