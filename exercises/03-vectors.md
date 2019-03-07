@@ -39,6 +39,13 @@ Foundations: Vectors
 > don’t do partial matching with $ column selecting; easier creation
 > of list columns.
 
+> Useful tidbit - when changing a data frame into a tibble and you want
+> to grab the rownames:
+
+``` r
+d <- tibble::as_tibble(mtcars, rownames = "name")
+```
+
 ## 3.2 Atomic vectors
 
 1.  How do you create raw and complex scalars? (See ?raw and ?complex)
@@ -423,7 +430,7 @@ c(z)
 
     ## [[1]]
     ## [1] "2018-08-01 22:00:00 PDT"
-    ##
+    ## 
     ## [[2]]
     ## [1] "2018-01-01"
 
@@ -495,7 +502,7 @@ df <- data.frame(x = 1:10, y = letters[1:10])
 as.matrix(df)
 ```
 
-    ##       x    y
+    ##       x    y  
     ##  [1,] " 1" "a"
     ##  [2,] " 2" "b"
     ##  [3,] " 3" "c"

@@ -25,6 +25,12 @@ output: rmarkdown::github_document
 
 > better printing, stringsAsFactors = FALSE, drop = FALSE as defaults; they don't transform non-syntactic names; they don't coerce input types; tibbles won't recycle values for other columns unless they are of length 1; tibbles allow you to build on columns as they are constructed; tibbles do not support row names on purpose; tibbles don't do partial matching with $ column selecting; easier creation of list columns.
 
+> Useful snippet - when changing a data frame into a tibble and you want to grab the rownames:
+
+```{r}
+d <- tibble::as_tibble(mtcars, rownames = "name")
+```
+
 ## 3.2 Atomic vectors
 
 1. How do you create raw and complex scalars? (See ?raw and ?complex)
