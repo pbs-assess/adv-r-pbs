@@ -50,7 +50,7 @@ x[upper.tri(x)]
 ```
 
 > It returns the upper triangle of the matrix.
-> Second part (FIXME?): it behaves like drop = TRUE?
+> Second part: The results are coerced to a vector the same way as `as.vector(x)` works.
 
 4. Why does mtcars[1:20] return an error? How does it differ from the similar mtcars[1:20, ]?
 
