@@ -215,8 +215,10 @@ x[upper.tri(x)]
 > that many columns. The second option correctly selects the first
 > twenty rows.
 
-5.Implement your own function that extracts the diagonal entries from a
-matrix (it should behave like diag(x) where x is a matrix).
+5.  Implement your own function that extracts the diagonal entries from
+    a matrix (it should behave like diag(x) where x is a matrix).
+
+<!-- end list -->
 
 ``` r
 x <- outer(1:5, 1:5, FUN = "*")
@@ -279,8 +281,6 @@ my_diag(matrix(1:24, nrow = 6))
 library(dplyr)
 ```
 
-    ## Warning: package 'dplyr' was built under R version 3.5.2
-
     ## 
     ## Attaching package: 'dplyr'
 
@@ -336,8 +336,6 @@ library(dplyr)
 
     ## [1] 4
 
-> 
-
 2.  Given a linear model, e.g., mod \<- lm(mpg \~ wt, data = mtcars),
     extract the residual degrees of freedom. Then extract the R squared
     from the model summary (summary(mod)).
@@ -356,38 +354,3 @@ library(dplyr)
 ```
 
     ## R^2 =  0.7528328
-
-> 
-
-## 4.5 Applications
-
-1.  Positive integers select elements at specific positions, negative
-    integers drop elements; logical vectors keep elements at positions
-    corresponding to TRUE; character vectors select elements with
-    matching names.
-
-> 
-
-2.  \[ selects sub-lists: it always returns a list. If you use it with a
-    single positive integer, it returns a list of length one. \[\[
-    selects an element within a list. $ is a convenient shorthand: x$y
-    is equivalent to x\[\[“y”\]\].
-
-> 
-
-3.  Use drop = FALSE if you are subsetting a matrix, array, or data
-    frame and you want to preserve the original dimensions. You should
-    almost always use it when subsetting inside a function.
-
-> 
-
-4.  If x is a matrix, x\[\] \<- 0 will replace every element with 0,
-    keeping the same number of rows and columns. In contrast, x \<- 0
-    completely replaces the matrix with the value 0.
-
-> 
-
-5.  A named character vector can act as a simple lookup table: c(x = 1,
-    y = 2, z = 3)\[c(“y”, “z”, “x”)\]
-
->
