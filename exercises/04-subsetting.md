@@ -202,8 +202,10 @@ x[upper.tri(x)]
 
     ##  [1]  2  3  6  4  8 12  5 10 15 20
 
-> It returns the upper triangle of the matrix. Second part (FIXME?): it
-> behaves like drop = TRUE?
+> It returns the upper triangle of the matrix.
+
+> Second part: The results are coerced to a vector the same way as
+> `as.vector(x)` works.
 
 4.  Why does mtcars\[1:20\] return an error? How does it differ from the
     similar mtcars\[1:20, \]?
@@ -271,11 +273,89 @@ my_diag(matrix(1:24, nrow = 6))
 1.  Brainstorm as many ways as possible to extract the third value from
     the cyl variable in the mtcars dataset.
 
+<!-- end list -->
+
+``` r
+library(dplyr)
+```
+
+    ## Warning: package 'dplyr' was built under R version 3.5.2
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+  k <- mtcars
+  j <- tibble::as_tibble(mtcars, rownames = "name")
+  (j %>% select(cyl))[3,]
+```
+
+    ## # A tibble: 1 x 1
+    ##     cyl
+    ##   <dbl>
+    ## 1     4
+
+``` r
+  (j %>% transmute(cyl))[3,]
+```
+
+    ## # A tibble: 1 x 1
+    ##     cyl
+    ##   <dbl>
+    ## 1     4
+
+``` r
+  k$cyl[3]
+```
+
+    ## [1] 4
+
+``` r
+  k[["cyl"]][3]
+```
+
+    ## [1] 4
+
+``` r
+  k[,"cyl"][3]
+```
+
+    ## [1] 4
+
+``` r
+  k[,names(k) == "cyl"][3]
+```
+
+    ## [1] 4
+
 > 
 
 2.  Given a linear model, e.g., mod \<- lm(mpg \~ wt, data = mtcars),
     extract the residual degrees of freedom. Then extract the R squared
     from the model summary (summary(mod)).
+
+<!-- end list -->
+
+``` r
+  mod <- lm(mpg ~ wt, data = mtcars)
+  cat("Residual df = ", mod$df.residual, "\n")
+```
+
+    ## Residual df =  30
+
+``` r
+  cat("R^2 = ", summary(mod)$r.squared, "\n")
+```
+
+    ## R^2 =  0.7528328
 
 > 
 
