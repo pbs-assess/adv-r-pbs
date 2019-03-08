@@ -31,7 +31,16 @@ x[NA]
 x[NA_real_]
 ```
 
-> A missing value in the index always returns a missing value in the output. It returns 5 values because of recycling rules and NA is of type logical here. The recycling rules are different for numeric NAs.
+> It returns 5 values because NA is of type logical and the NA is recycled to match the length of the vector. Look at the types of NAs and examples below to see why:
+
+```{r}
+typeof(NA)
+typeof(NA_real_)
+x[c(TRUE, NA)]
+x[c(TRUE, TRUE, NA)]
+x[c(1, NA_real_)]
+x[c(1, NA_real_, NA_real_)]
+```
 
 3. What does upper.tri() return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
