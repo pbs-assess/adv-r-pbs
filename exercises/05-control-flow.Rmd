@@ -1,0 +1,88 @@
+---
+title: "Foundations: Control Flow"
+output: rmarkdown::github_document
+---
+
+## 5.2 Choices
+
+1. What type of vector does each of the following calls to `ifelse()` return?
+
+```{r}
+x <- ifelse(TRUE, 1, "no")
+typeof(x)
+```
+> The `1` is returned, and interpreted as a `double`. To make it an integer, you would have to use `1L`.
+
+```{r}
+y <- ifelse(FALSE, 1, "no")
+typeof(y)
+```
+> The `"no"` is returned, which is of type `character`.
+
+```{r}
+z <- ifelse(NA, 1, "no")
+typeof(z)
+```
+> `NA` is returned, which is of type `logical`. Interestingly, you can do the following and get the same result:
+
+```{r}
+z <- ifelse(NA)
+typeof(z)
+```
+
+2. Why does the following code work?
+
+```{r}
+x <- 1:10
+if (length(x)) "not empty" else "empty"
+
+x <- numeric()
+if (length(x)) "not empty" else "empty"
+```
+> The expression `length(x)` evaluates to an `integer` which is coerced to a `logical`. Zero is coerced to `FALSE` and any other value to `TRUE`. This integer-to-logical coercion is a feature of C that was carried over to R.
+
+## 5.3 Loops
+
+1. Why does this code succeed without errors or warnings?
+
+```{r}
+x <- numeric()
+out <- vector("list", length(x))
+for (i in 1:length(x)) {
+  out[i] <- x[i] ^ 2
+}
+out
+```
+> The expression `1:length(x)` evaluates to `1:0` in this case, which is allowed in R. The code inside the `for` loop will evaluate `out[1] <- NA` when `i == 1` and when `i == 0` it will evaluate `numeric(0) <- numeric(0)` which is meaningless but doesn't produce an error. Use `seq_along` instead:
+
+```{r}
+x <- numeric()
+out <- vector("list", length(x))
+for (i in seq_along(x)) {
+  out[i] <- x[i] ^ 2
+}
+out
+```
+
+2. When the following code is evaluated, what can you say about the vector being iterated?
+
+```{r}
+xs <- c(1, 2, 3)
+for (x in xs) {
+  xs <- c(xs, x * 2)
+}
+xs
+```
+> The vector is being appended to, one new element per iteration.
+
+3. What does the following code tell you about when the index is updated?
+
+```{r}
+for (i in 1:3) {
+  i <- i * 2
+  print(i) 
+}
+```
+> `i` is updated (reset) at the beginning of each iteration to the value given in the parentheses. Any modifications to `i` inside the loop are forgotten at the end of the iteration.
+
+
