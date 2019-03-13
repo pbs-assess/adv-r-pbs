@@ -1,0 +1,230 @@
+---
+title: "Foundations: Functions"
+output: rmarkdown::github_document
+---
+
+## 6.2 Function fundamentals
+
+1. Given a name, like `"mean"`, `match.fun()` lets you find a function. Given a function, can you find its name? Why doesn’t that make sense in R?
+
+> R's variables and functions are references to objects, so a function can have more than one reference pointing to it and therefore there is no unique name:
+
+```{r}
+x <- y <- z <- function(x){
+  x^2
+}
+```
+
+2. It’s possible (although typically not useful) to call an anonymous function. Which of the two approaches below is correct? Why?
+
+```{r}
+function(x) 3()
+(function(x) 3)()
+```
+> The first example is trying to use the number `3` as a function which is not possible. The second (correct) example creates an anonymous function `function(x) 3` and calls it using the two sets of parentheses.
+
+3. A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use `{}`. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
+
+> In general, anaoymous functions would be used inside other function calls where a (simple) function is applied to elements of a vector or list. Examples would be inside the R-base `apply` functions and the `purrr::map` functions. e.g.:
+
+```{r}
+j <- list(1, 2, 3)
+lapply(j, function(x) x^2)
+purrr::map(j, function(x) {y <- x^2;y*2})
+```
+
+4. What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?
+
+```{r}
+a <- function(x){x^2}
+is.function(a)
+is.primitive(a)
+is.primitive(`+`)
+```
+
+5. This code makes a list of all functions in the base package:
+
+```{r}
+objs <- mget(ls("package:base", all = TRUE), inherits = TRUE)
+funs <- Filter(is.function, objs)
+```
+
+> The functions below were used to create output to answer questions that follow:
+
+```{r message = FALSE, warning = FALSE}
+library(tibble)
+library(dplyr)
+library(purrr)
+
+gn <- function(lst1){
+  # Extract only NULL elements' names from list lst1
+  j <- list()
+  ind <- 0
+  for(i in seq_along(lst1)){
+    if(is.null(lst1[[i]])){
+      j[[ind <- ind + 1]] <- names(lst1)[i]
+    }
+  }
+  j
+}
+
+package.funs <- function(p = "base"){
+  objs <- mget(ls(paste0("package:", p)), inherits = TRUE)
+  funs <- Filter(is.function, objs)
+  all.funcs <- purrr::map(funs, function(x){formals(args(x))})
+  special.funcs <- gn(all.funcs) %>%
+    map_chr(1)
+  args.funcs <- all.funcs
+  args.funcs[sapply(args.funcs, is.null)] <- NULL
+  num.args <- purrr::map(args.funcs, length) %>%
+    map_int(1)
+  args.funcs <- as.data.frame(num.args) %>%
+    as_tibble(rownames = "name") %>%
+    arrange(desc(num.args)) %>%
+    as.data.frame()
+  ## Need to do this because there is a bug in dplyr.
+  ## See https://github.com/tidyverse/dplyr/issues/4280
+  is.primitive <- apply(args.funcs[,1 ,drop = FALSE],
+                        1,
+                        function(x){
+                          is.primitive(get(x))
+                        })
+  args.funcs <- cbind(args.funcs, is.primitive) %>%
+    as_tibble()
+  list(args.funcs = args.funcs,
+       special.funcs = special.funcs)
+}
+a <- package.funs()
+```
+
+> There are a couple things to note here. The `formals` function does not return the arguments for primitives, but `NULL` instead. To get around this, the code above uses `formals(args())` as this will return arguments for both primitives and non-primitives. There are some builtin functions which you cannot get argument lists for even with `formals(args())`. These are returned in a vector called `special.funcs` from the function `package.funcs()` above.
+
+  a. Which base function has the most arguments?
+
+  > The first one in the `a$args.funcs` dataframe, `r a$args.funcs$name[1]`, with `r a$args.funcs$num.args[1]` arguments.
+
+  b. How many base functions have no arguments? What’s special about those functions?
+
+  > There are no base functions with zero arguments. There are `r length(a$special.funcs)` functions which do not report their argument using `formals()` or `formals(args())`.
+
+  c. How could you adapt the code to find all primitive functions?
+
+  > See the code above.
+
+6. What are the three important components of a function?
+
+> The `formals`, `body`, and `environment`.
+
+7. When does printing a function not show the environment it was created in?
+
+> Primitive functions have `NULL` values for `formals`, `body`, and `environment` attributes.
+
+## 6.4 Lexical Scoping
+
+1. What does the following code return? Why? Describe how each of the three c’s is interpreted.
+
+```{r}
+c <- 10
+c(c = c)
+```
+
+> The first `c` is a variable and assigned a value, the `c()` is the vector combine function, the `c = ` on the second line is another variable inside the scope of the `c()` call, the `c` it is assigned to is the `c` from the first line, because it is up one level in scope.
+
+2. What are the four principles that govern how R looks for values?
+
+> 1. Name masking
+  1. Functions vs. variables
+  1. A fresh start
+  1. Dynamic lookup
+
+3. What does the following function return? Make a prediction before running the code yourself.
+
+```{r}
+f <- function(x) {
+  f <- function(x) {
+    f <- function() {
+      x ^ 2
+    }
+    f() + 1
+  }
+  f(x) * 2
+}
+f(10)
+```
+> I predicted 202
+
+## 6.5 Lazy Evaluation
+
+1. What important property of `&&` makes `x_ok()` work?
+
+```{r}
+x_ok <- function(x) {
+  !is.null(x) && length(x) == 1 && x > 0
+}
+x_ok(NULL)
+x_ok(1)
+x_ok(1:3)
+```
+
+>  Lazy evaluation. If x is `NULL`, only the `is.null(x)` part of the expression is evaluated.
+
+What is different with this code? Why is this behaviour undesirable here?
+
+```{r}
+x_ok <- function(x) {
+  !is.null(x) & length(x) == 1 & x > 0
+}
+x_ok(NULL)
+x_ok(1)
+x_ok(1:3)
+```
+
+>  The operator `&` is vectorized and therefore does not incorporate lazy evaluation. All parts of the expression will be evaluated.
+
+2. What does this function return? Why? Which principle does it illustrate?
+
+```{r}
+f2 <- function(x = z) {
+  z <- 100
+  x
+}
+f2()
+```
+
+> It will return 100, because the argument list is evaluated lazily and `x` is set to 100 by using the value of `z` inside the function body.
+
+3. What does this function return? Why? Which principle does it illustrate?
+
+```{r}
+y <- 10
+f1 <- function(x = {y <- 1; 2}, y = 0) {
+  c(x, y)
+}
+f1()
+y
+```
+
+> In this case, `y` is set to 1 and `x` to 2 inside the argument list. Outside the function, `y` remains as 10. This is due to scoping rules.
+
+4. In hist(), the default value of xlim is range(breaks), the default value for breaks is "Sturges", and
+
+```{r}
+range("Sturges")
+```
+
+Explain how hist() works to get a correct xlim value.
+
+> `breaks` is recalculated inside the function and lazy evaluation applies the newly calculated values to the `xlim` argument.
+
+5. Explain why this function works. Why is it confusing?
+
+```{r}
+show_time <- function(x = stop("Error!")) {
+  stop <- function(...) Sys.time()
+  print(x)
+}
+show_time()
+```
+
+> Lazy evaluation binds x to be the new value of the stop function as defined inside the function body. This should not be written this way because it is changing the function definition for the base `stop` function to something that doesn't resemble stopping. Note this only happens inside the function's scope, so the `stop` function isn't changed globally. It relies on lazy evaluation to reduce the number of lines of code necessary so although clever, it is horrible practice.
+
