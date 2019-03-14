@@ -80,17 +80,10 @@ package.funs <- function(p = "base"){
     map_int(1)
   args.funcs <- as.data.frame(num.args) %>%
     as_tibble(rownames = "name") %>%
-    arrange(desc(num.args)) %>%
-    as.data.frame()
-  ## Need to do this because there is a bug in dplyr.
-  ## See https://github.com/tidyverse/dplyr/issues/4280
-  is.primitive <- apply(args.funcs[,1 ,drop = FALSE],
-                        1,
-                        function(x){
-                          is.primitive(get(x))
-                        })
-  args.funcs <- cbind(args.funcs, is.primitive) %>%
-    as_tibble()
+    # Can't use mutate(is.primitive = is.primitive(get())) here
+    # Check out https://github.com/tidyverse/dplyr/issues/4280 to see why
+    mutate(is.primitive = map_lgl(name,~is.primitive(get(.)))) %>%
+    arrange(desc(num.args))
   list(args.funcs = args.funcs,
        special.funcs = special.funcs)
 }
@@ -228,3 +221,42 @@ show_time()
 
 > Lazy evaluation binds x to be the new value of the stop function as defined inside the function body. This should not be written this way because it is changing the function definition for the base `stop` function to something that doesn't resemble stopping. Note this only happens inside the function's scope, so the `stop` function isn't changed globally. It relies on lazy evaluation to reduce the number of lines of code necessary so although clever, it is horrible practice.
 
+## 6.6 Dot..dot..dot
+
+1. Explain the following results:
+
+```{r}
+sum(1, 2, 3)
+mean(1, 2, 3)
+sum(1, 2, 3, na.omit = TRUE)
+mean(1, 2, 3, na.omit = TRUE)
+```
+
+> `sum` is implemented using `...` as its first argument, so all values are used in the sum and it is correct.
+`mean` is implemented using `x` as its first argument and therefore cannot do the mean of numbers unless they are in a vector. `na.omit` is not an argument for either of these functions. It is just passed along in `mean` because it is part of the `...` arguments but in `sum` it is coerced to `logical` and then to the type that is being summed. In this case it is coerced to `TRUE` then to `1` so the call becomes the equivalent of `sum(1, 2, 3, 1)` which evaluates to 7.
+
+2. In the following call, explain how to find the documentation for the named arguments in the following function call:
+
+```{r}
+plot(1:10, col = "red", pch = 20, xlab = "x", col.lab = "blue")
+```
+
+> Looking at the help for `plot`, is says that the `...` parameters are explained in `par`.
+
+3. Why does `plot(1:10, col = "red")` only colour the points, not the axes or labels? Read the source code of `plot.default()` to find out.
+
+> `localAxis`, `localBox`, `localWindow`, and `localTitle` inside the `plot.default` function use the global `col` value which is the one set up in `par()`. The `col` passed into the function is used only to plot the points.
+
+## 6.7 Exiting a function
+
+1. What does `load()` return? Why don't you normally see these values?
+
+> It returns the objects stored in the file that was loaded. These could be huge objects so you wouldn't want them printed to the screen.
+
+2. What does `write.table()` return? What would be more useful?
+
+> It returns`NULL`. A value representing success or failure of writing the file would be more useful.
+
+3. How does the `chdir` parameter of `source()` compare to `in_dir()`? Why might you prefer one to the other?
+
+> 
