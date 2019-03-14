@@ -1,0 +1,70 @@
+---
+title: "Foundations: Environments"
+output: rmarkdown::github_document
+---
+
+## 7.2
+
+```{r}
+library(rlang)
+````
+
+1. List three ways in which an environment differs from a list.
+
+> 1. Every name must be unique.
+  1. The names in an environment are not ordered.
+  1. An environment has a parent.
+  1. Environments are not copied when modified.
+  
+2. Create an environment as illustrated by this picture.
+
+```{r}
+e1 <- env()
+e1$loop <- e1
+```
+
+3. Create a pair of environments as illustrated by this picture.
+
+```{r}
+e1 <- env()
+e2 <- env()
+e1$loop <- e2
+e2$dedoop <- e1
+```
+
+4. Explain why `e[[1]]` and `e[c("a", "b")]` don’t make sense when `e` is an environment.
+
+> Environments are not ordered, so numbered or vectorized indexing make no sense.
+
+5. Create a version of `env_poke()` that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment languages.
+
+```{r}
+env_poke_single <- function(env = caller_env(), nm, value){
+  stopifnot(is_string(nm))
+  if(!env_has(env, nm)){
+    assign(nm, value, envir = env)
+  }
+}
+```
+
+6. What does this function do? How does it differ from `<<-` and why might you prefer it?
+
+```{r error = TRUE}
+rebind <- function(name, value, env = caller_env()) {
+  if(identical(env, empty_env())){
+    stop("Can't find `", name, "`", call. = FALSE)
+  }else if(env_has(env, name)){
+    env_poke(env, name, value)
+  }else{
+    rebind(name, value, env_parent(env))
+  }
+}
+rebind("a", 10)
+a <- 5
+rebind("a", 10)
+a
+```
+
+> This is a recursive function that attempts to re-bind the value to the variable in the current environment, followed by the parent, followed by it's parent, etc. It re-binds in the first environment it finds where the variable exists. This will recurse all the way past the `.GlobalEnv` and through the package environments, unlike `<<-` which stops at the `.GlobalEnv` and creates the variable if it doesn't exist there.
+
+
