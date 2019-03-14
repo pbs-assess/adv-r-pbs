@@ -15,9 +15,9 @@ x <- y <- z <- function(x){
 }
 ```
 
-2. It’s possible (although typically not useful) to call an anonymous function. Which of the two approaches below is correct? Why?
+2. It's possible (although typically not useful) to call an anonymous function. Which of the two approaches below is correct? Why?
 
-```{r}
+```{r error = TRUE}
 function(x) 3()
 (function(x) 3)()
 ```
@@ -80,7 +80,7 @@ package.funs <- function(p = "base"){
     map_int(1)
   args.funcs <- as.data.frame(num.args) %>%
     as_tibble(rownames = "name") %>%
-    # Can't use mutate(is.primitive = is.primitive(get())) here
+    # Can't use mutate(is.primitive = is.primitive(get(.))) here
     # Check out https://github.com/tidyverse/dplyr/issues/4280 to see why
     mutate(is.primitive = map_lgl(name,~is.primitive(get(.)))) %>%
     arrange(desc(num.args))
@@ -98,11 +98,12 @@ a <- package.funs()
 
   b. How many base functions have no arguments? What’s special about those functions?
 
-  > There are no base functions with zero arguments. There are `r length(a$special.funcs)` functions which do not report their argument using `formals()` or `formals(args())`.
+  > There are no base functions with zero arguments. There are `r length(a$special.funcs)` functions which do not report their arguments using `formals()` or `formals(args())`.
 
   c. How could you adapt the code to find all primitive functions?
 
-  > See the code above.
+  > See the code above. It adds a column for this using this line:
+  `mutate(is.primitive = map_lgl(name,~is.primitive(get(.)))) %>%`
 
 6. What are the three important components of a function?
 
@@ -259,4 +260,175 @@ plot(1:10, col = "red", pch = 20, xlab = "x", col.lab = "blue")
 
 3. How does the `chdir` parameter of `source()` compare to `in_dir()`? Why might you prefer one to the other?
 
-> 
+> `in_dir()` takes code as an argument, leaving no question as to what is executed in the new directory. `source()` uses `chdir` to change directories somewhere in the function and it is difficult to trace how it works. It is better for code encapsulation purposes to use `in_dir()`.
+
+4. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code works).
+
+```{r}
+pl <- function(){
+  plot.new()
+  on.exit(dev.off(), add = TRUE)
+
+  ## Plotting code here
+}
+```
+
+5. We can use `on.exit()` to implement a simple version of `capture.output()`.
+
+```{r}
+capture.output2 <- function(code) {
+  temp <- tempfile()
+  on.exit(file.remove(temp), add = TRUE, after = TRUE)
+
+  sink(temp)
+  on.exit(sink(), add = TRUE, after = TRUE)
+
+  force(code)
+  readLines(temp)
+}
+capture.output2(cat("a", "b", "c", sep = "\n"))
+```
+Compare `capture.output()` to `capture.output2()`. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas so they’re easier to understand?
+
+> The main difference is that `capture.output2()` uses multiple `on.exit` calls which make it much easier to see what is going on. These multiple calls are done in order and therefore the function flows in the natural order in which you would expect.
+
+## 6.8 Function Forms
+
+1. Rewrite the following code snippets into prefix form:
+
+```{r}
+1 + 2 + 3
+`+`(3, `+`(1, 2))
+
+1 + (2 + 3)
+`+`(1, `+`(2, 3))
+
+x <- 1:5
+if (length(x) <= 5) x[[5]] else x[[n]]
+`if`(length(x) <= 5, `[[`(x, 5), `[[`(x, n))
+```
+
+2. Clarify the following list of odd function calls:
+
+```{r}
+x <- sample(replace = TRUE, 20, x = c(1:10, NA))
+```
+
+> Here, the 20 is the `size` argument so this produces a vector of length 20 with replacement drawing from the vector given by `x`.
+
+```{r}
+y <- runif(min = 0, max = 1, 20)
+```
+
+> Here, the 20 is the `x` argument so this produces a vector of length 20 of draws from the unif distribution between 0 and 1.
+
+```{r}
+cor(m = "k", y = y, u = "p", x = x)
+```
+
+> Here, all arguments are at least partially named so it's easy to see what's going on. It's using `x` and `y` from the previous code and partial matching for arguments `u = use` and `m = method`. For `use`, partial matching is also used for the value, so `p = pairwise.complete.obs`. For `method`, the partial value match is `k = kendall`.
+
+3. Explain why the following code fails:
+
+```{r error = TRUE}
+`modify<-` <- function(x, position, value) {
+  x[position] <- value
+  x
+}
+modify(get("x"), 1) <- 10
+```
+
+> This is because the return value of `get("x")` has been not been assigned to a variable and is temporary. You must assign it before doing this.
+
+```{r}
+a <- get("x")
+modify(a, 1) <- 10
+a
+```
+
+4. Create a replacement function that modifies a random location in a vector.
+
+```{r}
+`repl.rand<-` <- function(x, value){
+  x[sample(seq_along(x), 1)] <- value
+  x
+}
+
+x <- 1:10
+repl.rand(x) <- 99
+x
+repl.rand(x) <- 55
+x
+```
+
+5. Write your own version of `+` that pastes its inputs together if they are character vectors but behaves as usual otherwise. In other words, make this code work:
+
+```{r error = TRUE}
+1 + 2
+"a" + "b"
+`+` <- function(e1, e2){
+  if(typeof(e1) == "character" || typeof(e2) == "character"){
+    paste0(e1, e2)
+  }else{
+    tmp <- .Primitive("+")
+    tmp(e1, e2)
+  }
+}
+1 + 2
+"a" + "b"
+```
+
+6. Create a list of all the replacement functions found in the base package. Which ones are primitive functions? (Hint: use `apropos()`)
+
+```{r}
+library(tibble)
+library(purrr)
+library(dplyr)
+repl.funcs <- apropos("<-") %>%
+  enframe(name = NULL) %>% 
+    rename(name = value) %>% 
+      mutate(is.primitive = map_lgl(name, ~is.primitive(get(.))))
+
+are.primitive <- repl.funcs[repl.funcs$is.primitive,]
+are.primitive
+```
+
+> `r nrow(are.primitive)` of the `r nrow(repl.funcs)` base replacement functions are primitive.
+
+7. What are valid names for user-created infix functions?
+
+> User infix functions are anything surrounded by %%, and can't contain %. Examples are `% %`, `%/\%`, `%XX%`.
+
+8. Create an infix xor() operator.
+
+```{r}
+`%xor%` <- function(e1, e2){
+    (e1 && !e2) || (!e1 && e2)
+}
+TRUE %xor% FALSE
+TRUE %xor% TRUE
+FALSE %xor% FALSE
+FALSE %xor% TRUE
+```
+
+9. Create infix versions of the set functions `intersect()`, `union()`, and `setdiff()`. You might call them `%n%`, `%u%`, and `%/%` to match conventions from mathematics.
+
+```{r}
+`%n%` <- function(x, y){
+  base::intersect(x, y)
+}
+
+`%u%` <- function(x, y){
+  base::union(x, y)
+}
+
+`%/%` <- function(x, y){
+  base::setdiff(x, y)
+}
+
+(x <- c(sort(sample(1:20, 9)), NA))
+(y <- c(sort(sample(3:23, 7)), NA))
+x %n% y
+x %u% y
+x %/% y
+```
