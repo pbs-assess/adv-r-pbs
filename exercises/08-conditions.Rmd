@@ -1,0 +1,23 @@
+---
+title: "Foundations: Conditions"
+output: rmarkdown::github_document
+---
+
+## 8.2 Signalling conditions
+
+1. Write a wrapper around `file.remove()` that throws an error if the file to be deleted does not exist.
+
+```{r}
+file.delete <- function(...){
+  j <- as.vector(list(...))
+  exists <- file.exists(...)
+  j <- j[!exists]
+  if(length(j)){
+    stop("The following files could not be found:\n", paste(j, collapse = "\n"))
+  }
+  file.remove(...)
+  invisible()
+}
+```
+
+
