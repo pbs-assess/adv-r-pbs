@@ -142,3 +142,23 @@ str <- function(object, env = caller_env(), inherits = TRUE, ...){
   }
 }
 ```
+
+## 7.5 Call stacks
+
+1. Write a function that lists all the variables defined in the environment in which it was called. It should return the same results as `ls()`.
+
+```{r}
+lse <- function(env = caller_env()){
+  sort(env_names(env))
+}
+f1 <- function(){
+  a <- 1
+  b <- 2
+  x <- 10
+  j <- function(x) x / 2
+  lse()
+}
+f1()
+```
+
+
