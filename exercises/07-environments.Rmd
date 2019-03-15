@@ -109,3 +109,36 @@ e2 <-  env(e1, a2 = 1, b2 = 2, c2 =3, mean = function(x)sum(x)/length(x))
 fget("mean", e2, TRUE)
 fget("mean", e2)
 ```
+
+## 7.4 Special environments
+
+1. How is `search_envs()` different from `env_parents(global_env())`?
+
+> `search_envs()` includes the global environment, but not the empty environment, `env_parents(global_env())` does not include the global environment but includes the empty environment.
+
+2. Draw a diagram that shows the enclosing environments of this function:
+
+```{r}
+f1 <- function(x1) {
+  f2 <- function(x2) {
+    f3 <- function(x3) {
+      x1 + x2 + x3
+    }
+    f3(3)
+  }
+  f2(2)
+}
+f1(1)
+```
+> The main take-away here is that `f1` is the parent of `f2` and `f2` is the parent of `f3`. The variables `x1` and `x2` inside the function `f3` will be found by the parent environments being searched.
+
+3. Write an enhanced version of `str()` that provides more information about functions. Show where the function was found and what environment it was defined in.
+
+```{r}
+str <- function(object, env = caller_env(), inherits = TRUE, ...){
+  utils::str(object, ...)
+  if(is.function(object)){
+    fget(as.character(substitute(object)), env, inherits)    
+  }
+}
+```
