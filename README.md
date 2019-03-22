@@ -14,5 +14,5 @@ If there are topics or exercises in the material covered that you particularly s
 |--------------------------|-----------|-------------------------------------|
 | 2019-03-08 10:30–12:00   | 227A      | Foundations (1–3)                   |
 | 2019-03-22 10:30–12:00   | 230       | Foundations (4–5)                   |
-| 2019-04-05 10:30–12:00   | 230       | Foundations (6–8)                   |
+| 2019-04-05 10:30–12:00   | 230       | Foundations (6–7)                   |
 
