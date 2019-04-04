@@ -10,10 +10,10 @@ If there are topics or exercises in the material covered that you particularly s
 
 ## Proposed Schedule
 
-| Date                     | Location  | Book topics                         |
-|--------------------------|-----------|-------------------------------------|
-| 2019-03-08 10:30–12:00   | 227A      | Foundations (1–3)                   |
-| 2019-03-22 10:30–12:00   | 230       | Foundations (4–5)                   |
-| 2019-04-05 10:30–12:00   | 230       | Foundations (6) (Functions)         |
-| 2019-04-19 10:30–12:00   | TBD       | Foundations (7) (Environments)      |
+| Date                      | Location  | Book topics                         |
+|---------------------------|-----------|-------------------------------------|
+| 2019-03-08 10:30–12:00    | 227A      | Foundations (1–3)                   |
+| 2019-03-22 10:30–12:00    | 230       | Foundations (4–5)                   |
+| 2019-04-05 **12:30–1:00** | 230       | Foundations (6) (Functions)         |
+| 2019-04-19 10:30–12:00    | TBD       | Foundations (7) (Environments)      |
 
