@@ -21,7 +21,7 @@ x <- y <- z <- function(x){
 function(x) 3()
 (function(x) 3)()
 ```
-> The first example is trying to use the number `3` as a function which is not possible. The second (correct) example creates an anonymous function `function(x) 3` and calls it using the two sets of parentheses.
+> The first example is trying to use the number `3` as a function name which is not allowed in R The second (correct) example creates an anonymous function `function(x) 3` and calls it using the two sets of parentheses.
 
 3. A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use `{}`. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
 
@@ -71,11 +71,23 @@ gn <- function(lst1){
 package.funs <- function(p = "base"){
   objs <- mget(ls(paste0("package:", p)), inherits = TRUE)
   funs <- Filter(is.function, objs)
-  all.funcs <- purrr::map(funs, function(x){formals(args(x))})
+  suppressWarnings(
+    all.funcs <- purrr::map(funs, function(x){formals(args(x))})
+  )
+  # special.funcs is a vector of names of functions with NULL formals
   special.funcs <- gn(all.funcs) %>%
     map_chr(1)
+  special.funcs <- as.data.frame(special.funcs) %>% 
+    as_tibble() %>% 
+    rename(name = special.funcs) %>%
+    mutate(name = as.character(name),
+           num.args = NA,
+           is.primitive = sapply(name, function(x) is.primitive(get(x))))
   args.funcs <- all.funcs
+  # Remove NULL entries (they are already in special.funcs)
   args.funcs[sapply(args.funcs, is.null)] <- NULL
+  # Now, args.funcs contains only functions that have formals reported
+  # Extract the number of arguments for each function
   num.args <- purrr::map(args.funcs, length) %>%
     map_int(1)
   args.funcs <- as.data.frame(num.args) %>%
@@ -84,8 +96,7 @@ package.funs <- function(p = "base"){
     # Check out https://github.com/tidyverse/dplyr/issues/4280 to see why
     mutate(is.primitive = map_lgl(name,~is.primitive(get(.)))) %>%
     arrange(desc(num.args))
-  list(args.funcs = args.funcs,
-       special.funcs = special.funcs)
+  bind_rows(args.funcs, special.funcs)
 }
 a <- package.funs()
 ```
@@ -94,15 +105,16 @@ a <- package.funs()
 
   a. Which base function has the most arguments?
 
-  > The first one in the `a$args.funcs` dataframe, `r a$args.funcs$name[1]`, with `r a$args.funcs$num.args[1]` arguments.
+  > The first one in the `a` dataframe, `r a$name[1]`(), with `r a$num.args[1]` arguments.
 
   b. How many base functions have no arguments? What’s special about those functions?
 
-  > There are no base functions with zero arguments. There are `r length(a$special.funcs)` functions which do not report their arguments using `formals()` or `formals(args())`.
+  > It is (maybe) unknown how many base functions have zero arguments. There are `r length(which(is.na(a$num.args)))` functions which do not report their arguments using `formals()` or `formals(args())`.
 
   c. How could you adapt the code to find all primitive functions?
 
-  > See the code above. It adds a column for this using this line:
+  > See the code above. It adds a column for this using these two lines:
+  `is.primitive = sapply(name, function(x) is.primitive(get(x)))` and
   `mutate(is.primitive = map_lgl(name,~is.primitive(get(.)))) %>%`
 
 6. What are the three important components of a function?
